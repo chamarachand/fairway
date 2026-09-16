@@ -1,11 +1,15 @@
+import 'package:fairway/core/enums/price_sort.dart';
 import 'package:fairway/features/products/data/datasources/product_remote_data_source.dart';
 import 'package:fairway/features/products/data/models/product.dart';
 
 abstract class ProductRepository {
-  Future<List<Product>> fetchProducts();
-  Future<List<Product>> searchProducts(String query);
+  Future<List<Product>> fetchProducts({PriceSort? sortOrder});
+  Future<List<Product>> searchProducts(String query, {PriceSort? sortOrder});
   Future<List<String>> fetchCategories();
-  Future<List<Product>> fetchProductsByCategory(String category);
+  Future<List<Product>> fetchProductsByCategory(
+    String category, {
+    PriceSort? sortOrder,
+  });
 }
 
 class ProductRepositoryImpl implements ProductRepository {
@@ -14,13 +18,13 @@ class ProductRepositoryImpl implements ProductRepository {
   ProductRepositoryImpl({required this.remoteDataSource});
 
   @override
-  Future<List<Product>> fetchProducts() {
-    return remoteDataSource.fetchProducts();
+  Future<List<Product>> fetchProducts({PriceSort? sortOrder}) {
+    return remoteDataSource.fetchProducts(sortOrder: sortOrder);
   }
 
   @override
-  Future<List<Product>> searchProducts(String query) {
-    return remoteDataSource.searchProducts(query);
+  Future<List<Product>> searchProducts(String query, {PriceSort? sortOrder}) {
+    return remoteDataSource.searchProducts(query, sortOrder: sortOrder);
   }
 
   @override
@@ -29,7 +33,14 @@ class ProductRepositoryImpl implements ProductRepository {
   }
 
   @override
-  Future<List<Product>> fetchProductsByCategory(String category) {
-    return remoteDataSource.fetchProductsByCategory(category);
+  Future<List<Product>> fetchProductsByCategory(
+    String category, {
+    PriceSort? sortOrder,
+  }) {
+    print('fetchProductsByCategory calling');
+    return remoteDataSource.fetchProductsByCategory(
+      category,
+      sortOrder: sortOrder,
+    );
   }
 }

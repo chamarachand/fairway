@@ -5,6 +5,7 @@ import 'package:fairway/features/products/presentation/cubit/product_state.dart'
 import 'package:fairway/features/products/presentation/widgets/category_list.dart';
 import 'package:fairway/features/products/presentation/widgets/product_card.dart';
 import 'package:fairway/features/products/presentation/widgets/search_box.dart';
+import 'package:fairway/features/products/presentation/widgets/sort_popup_menu.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -25,10 +26,10 @@ class _ProductListScreenState extends State<ProductListScreen> {
 
   @override
   Widget build(BuildContext context) {
-    print('building again');
     return Scaffold(
       appBar: AppBar(
         title: const Text("Products", style: TextStyle(fontWeight: .bold)),
+        actions: const [SortPopupMenu()],
       ),
       body: Column(
         children: [
@@ -43,7 +44,6 @@ class _ProductListScreenState extends State<ProductListScreen> {
           Expanded(
             child: BlocBuilder<ProductCubit, ProductState>(
               builder: (context, state) {
-                print('State is $state');
                 if (state is ProductsLoading) {
                   return const Center(child: CircularProgressIndicator());
                 }

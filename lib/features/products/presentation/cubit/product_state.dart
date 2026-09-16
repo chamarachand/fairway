@@ -1,3 +1,4 @@
+import 'package:fairway/core/enums/price_sort.dart';
 import 'package:fairway/features/products/data/models/product.dart';
 import 'package:flutter/material.dart';
 
@@ -11,8 +12,13 @@ class ProductsLoading extends ProductState {}
 class ProductsLoaded extends ProductState {
   final List<Product> products;
   final String searchQuery;
+  final PriceSort priceSort;
 
-  ProductsLoaded({required this.products, this.searchQuery = ''});
+  ProductsLoaded({
+    required this.products,
+    this.searchQuery = '',
+    this.priceSort = PriceSort.none,
+  });
 }
 
 class ProductsError extends ProductState {
