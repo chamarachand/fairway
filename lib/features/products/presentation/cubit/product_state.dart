@@ -10,8 +10,9 @@ class ProductsLoading extends ProductState {}
 
 class ProductsLoaded extends ProductState {
   final List<Product> products;
+  final String searchQuery;
 
-  ProductsLoaded({required this.products});
+  ProductsLoaded({required this.products, required this.searchQuery});
 }
 
 class ProductsError extends ProductState {
@@ -19,5 +20,3 @@ class ProductsError extends ProductState {
 
   ProductsError({required this.message});
 }
-
-class ProductsEmpty extends ProductState {}

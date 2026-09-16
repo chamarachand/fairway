@@ -2,6 +2,7 @@ import 'package:fairway/features/products/data/models/product.dart';
 import 'package:fairway/features/products/presentation/cubit/product_cubit.dart';
 import 'package:fairway/features/products/presentation/cubit/product_state.dart';
 import 'package:fairway/features/products/presentation/widgets/product_card.dart';
+import 'package:fairway/features/products/presentation/widgets/search_box.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -27,6 +28,12 @@ class _ProductListScreenState extends State<ProductListScreen> {
       ),
       body: Column(
         children: [
+          Center(
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 500),
+              child: const SearchBox(),
+            ),
+          ),
           Expanded(
             child: BlocBuilder<ProductCubit, ProductState>(
               builder: (context, state) {
@@ -41,11 +48,13 @@ class _ProductListScreenState extends State<ProductListScreen> {
                   );
                 }
 
-                if (state is ProductsEmpty) {
-                  return _ProductEmptyView();
-                }
-
                 if (state is ProductsLoaded) {
+                  if (state.products.isEmpty) {
+                    return _ProductEmptyView(
+                      isSearchActive: state.searchQuery.isNotEmpty,
+                    );
+                  }
+
                   return _ProductsGridView(displayProducts: state.products);
                 }
 
@@ -60,6 +69,10 @@ class _ProductListScreenState extends State<ProductListScreen> {
 }
 
 class _ProductEmptyView extends StatelessWidget {
+  final bool isSearchActive;
+
+  const _ProductEmptyView({required this.isSearchActive});
+
   @override
   Widget build(BuildContext context) {
     return Center(
@@ -69,13 +82,15 @@ class _ProductEmptyView extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(
-              Icons.inventory_2_outlined,
+              isSearchActive ? Icons.search_off : Icons.inventory_2_outlined,
               size: 60,
               color: Theme.of(context).disabledColor,
             ),
             const SizedBox(height: 16),
             Text(
-              "No products available.",
+              isSearchActive
+                  ? "No products match your search"
+                  : "No products available",
               textAlign: TextAlign.center,
               style: Theme.of(context).textTheme.bodyLarge,
             ),
