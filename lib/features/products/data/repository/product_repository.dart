@@ -3,7 +3,7 @@ import 'package:fairway/features/products/data/datasources/product_remote_data_s
 import 'package:fairway/features/products/data/models/product.dart';
 
 abstract class ProductRepository {
-  Future<List<Product>> fetchProducts({PriceSort? sortOrder});
+  Future<List<Product>> fetchProducts({PriceSort? sortOrder, String? query});
   Future<List<Product>> searchProducts(String query, {PriceSort? sortOrder});
   Future<List<String>> fetchCategories();
   Future<List<Product>> fetchProductsByCategory(
@@ -18,8 +18,8 @@ class ProductRepositoryImpl implements ProductRepository {
   ProductRepositoryImpl({required this.remoteDataSource});
 
   @override
-  Future<List<Product>> fetchProducts({PriceSort? sortOrder}) {
-    return remoteDataSource.fetchProducts(sortOrder: sortOrder);
+  Future<List<Product>> fetchProducts({PriceSort? sortOrder, String? query}) {
+    return remoteDataSource.fetchProducts(sortOrder: sortOrder, query: query);
   }
 
   @override

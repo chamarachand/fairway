@@ -154,7 +154,9 @@ class _ProductsGridView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return RefreshIndicator(
-      onRefresh: () async {},
+      onRefresh: () async {
+        await context.read<ProductCubit>().getProducts();
+      },
       child: GridView.builder(
         padding: const EdgeInsets.symmetric(horizontal: 10),
         gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(

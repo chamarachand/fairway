@@ -4,7 +4,7 @@ import 'package:fairway/core/services/api_service.dart';
 import 'package:fairway/features/products/data/models/product.dart';
 
 abstract class ProductRemoteDataSource {
-  Future<List<Product>> fetchProducts({PriceSort? sortOrder});
+  Future<List<Product>> fetchProducts({PriceSort? sortOrder, String? query});
   Future<List<Product>> searchProducts(String query, {PriceSort? sortOrder});
   Future<List<String>> fetchCategories();
   Future<List<Product>> fetchProductsByCategory(
@@ -19,8 +19,14 @@ class ProductRemoteDataSourceImpl implements ProductRemoteDataSource {
   ProductRemoteDataSourceImpl({required this.apiService});
 
   @override
-  Future<List<Product>> fetchProducts({PriceSort? sortOrder}) async {
-    final url = ApiConstants.products(order: sortOrder?.order);
+  Future<List<Product>> fetchProducts({
+    PriceSort? sortOrder,
+    String? query,
+  }) async {
+    final url = (query == null || query.isEmpty)
+        ? ApiConstants.products(order: sortOrder?.order)
+        : ApiConstants.productSearch(query, order: sortOrder?.order);
+    ;
     print('url: $url');
     final data = await apiService.get(url);
 

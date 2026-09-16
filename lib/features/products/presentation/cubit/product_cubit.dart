@@ -15,14 +15,21 @@ class ProductCubit extends Cubit<ProductState> {
         ? (state as ProductsLoaded).priceSort
         : PriceSort.none;
 
+    final currentQuery = (state is ProductsLoaded)
+        ? (state as ProductsLoaded).searchQuery
+        : '';
+
     emit(ProductsLoading());
 
     try {
-      final products = await repository.fetchProducts(sortOrder: priceSort);
+      final products = await repository.fetchProducts(
+        sortOrder: priceSort,
+        query: currentQuery,
+      );
       emit(
         ProductsLoaded(
           products: products,
-          searchQuery: '',
+          searchQuery: currentQuery,
           priceSort: priceSort,
         ),
       );
