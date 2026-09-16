@@ -10,114 +10,61 @@ class ProductCubit extends Cubit<ProductState> {
 
   ProductCubit({required this.repository}) : super(ProductInitial());
 
-  Future<void> getProducts() async {
-    final priceSort = (state is ProductsLoaded)
+  String getCurrentQuery() {
+    return state is ProductsLoaded ? (state as ProductsLoaded).searchQuery : '';
+  }
+
+  PriceSort getCurrentSortOption() {
+    return state is ProductsLoaded
         ? (state as ProductsLoaded).priceSort
         : PriceSort.none;
+  }
 
-    final currentQuery = (state is ProductsLoaded)
-        ? (state as ProductsLoaded).searchQuery
-        : '';
+  Future<void> getProducts() async {
+    await _loadProducts(clearQuery: true);
+  }
+
+  Future<void> refreshProducts(String? category) async {
+    await _loadProducts(category: category);
+  }
+
+  Future<void> searchProducts(String query) async {
+    await _loadProducts(query: query, clearCategory: true);
+  }
+
+  Future<void> filterByCategory(String? category) async {
+    await _loadProducts(category: category, clearQuery: true);
+  }
+
+  Future<void> sortByPrice(PriceSort sort, {String? category}) async {
+    await _loadProducts(sortOption: sort, category: category);
+  }
+
+  Future<void> _loadProducts({
+    String? category,
+    String? query,
+    PriceSort? sortOption,
+    bool clearQuery = false,
+    bool clearCategory = false,
+  }) async {
+    final targetCategory = clearCategory ? null : category;
+    final targetQuery = clearQuery ? '' : (query ?? getCurrentQuery());
+    final targerSortOption = sortOption ?? getCurrentSortOption();
 
     emit(ProductsLoading());
 
     try {
       final products = await repository.fetchProducts(
-        sortOrder: priceSort,
-        query: currentQuery,
-      );
-      emit(
-        ProductsLoaded(
-          products: products,
-          searchQuery: currentQuery,
-          priceSort: priceSort,
-        ),
-      );
-    } on AppException catch (e) {
-      emit(ProductsError(message: e.message));
-    } catch (e) {
-      emit(ProductsError(message: 'Something went wrong. Please try again'));
-    }
-  }
-
-  Future<void> searchProducts(String query) async {
-    final priceSort = (state is ProductsLoaded)
-        ? (state as ProductsLoaded).priceSort
-        : PriceSort.none;
-
-    emit(ProductsLoading());
-
-    try {
-      final products = await repository.searchProducts(
-        query,
-        sortOrder: priceSort,
+        category: targetCategory,
+        query: targetQuery,
+        sortOrder: targerSortOption,
       );
 
       emit(
         ProductsLoaded(
           products: products,
-          searchQuery: query,
-          priceSort: priceSort,
-        ),
-      );
-    } on AppException catch (e) {
-      emit(ProductsError(message: e.message));
-    } catch (e) {
-      emit(ProductsError(message: 'Something went wrong. Please try again'));
-    }
-  }
-
-  Future<void> filterByCategory(String? category) async {
-    final priceSort = (state is ProductsLoaded)
-        ? (state as ProductsLoaded).priceSort
-        : PriceSort.none;
-
-    emit(ProductsLoading());
-
-    try {
-      final products = (category == null || category.isEmpty)
-          ? await repository.fetchProducts(sortOrder: priceSort)
-          : await repository.fetchProductsByCategory(
-              category,
-              sortOrder: priceSort,
-            );
-
-      emit(
-        ProductsLoaded(
-          products: products,
-          searchQuery: '',
-          priceSort: priceSort,
-        ),
-      );
-    } on AppException catch (e) {
-      emit(ProductsError(message: e.message));
-    } catch (e) {
-      emit(ProductsError(message: 'Something went wrong. Please try again'));
-    }
-  }
-
-  Future<void> sortByPrice(PriceSort priceSort, {String? category}) async {
-    final query = (state is ProductsLoaded)
-        ? (state as ProductsLoaded).searchQuery
-        : '';
-
-    emit(ProductsLoading());
-
-    try {
-      final products = (category == null)
-          ? (query.isEmpty)
-                ? await repository.fetchProducts(sortOrder: priceSort)
-                : await repository.searchProducts(query, sortOrder: priceSort)
-          : await repository.fetchProductsByCategory(
-              category,
-              sortOrder: priceSort,
-            );
-
-      emit(
-        ProductsLoaded(
-          products: products,
-          searchQuery: query,
-          priceSort: priceSort,
+          searchQuery: targetQuery,
+          priceSort: targerSortOption,
         ),
       );
     } on AppException catch (e) {

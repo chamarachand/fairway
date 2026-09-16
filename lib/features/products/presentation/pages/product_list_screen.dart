@@ -1,5 +1,6 @@
 import 'package:fairway/features/products/data/models/product.dart';
 import 'package:fairway/features/products/presentation/cubit/category_cubit.dart';
+import 'package:fairway/features/products/presentation/cubit/category_state.dart';
 import 'package:fairway/features/products/presentation/cubit/product_cubit.dart';
 import 'package:fairway/features/products/presentation/cubit/product_state.dart';
 import 'package:fairway/features/products/presentation/widgets/category_list.dart';
@@ -155,7 +156,13 @@ class _ProductsGridView extends StatelessWidget {
   Widget build(BuildContext context) {
     return RefreshIndicator(
       onRefresh: () async {
-        await context.read<ProductCubit>().getProducts();
+        final categoryState = context.read<CategoryCubit>().state;
+
+        final currentCategory = (categoryState is CategoryLoaded)
+            ? categoryState.selectedCategory
+            : null;
+
+        await context.read<ProductCubit>().refreshProducts(currentCategory);
       },
       child: GridView.builder(
         padding: const EdgeInsets.symmetric(horizontal: 10),

@@ -3,13 +3,12 @@ import 'package:fairway/features/products/data/datasources/product_remote_data_s
 import 'package:fairway/features/products/data/models/product.dart';
 
 abstract class ProductRepository {
-  Future<List<Product>> fetchProducts({PriceSort? sortOrder, String? query});
-  Future<List<Product>> searchProducts(String query, {PriceSort? sortOrder});
-  Future<List<String>> fetchCategories();
-  Future<List<Product>> fetchProductsByCategory(
-    String category, {
+  Future<List<Product>> fetchProducts({
+    String? category,
+    String? query,
     PriceSort? sortOrder,
   });
+  Future<List<String>> fetchCategories();
 }
 
 class ProductRepositoryImpl implements ProductRepository {
@@ -18,29 +17,20 @@ class ProductRepositoryImpl implements ProductRepository {
   ProductRepositoryImpl({required this.remoteDataSource});
 
   @override
-  Future<List<Product>> fetchProducts({PriceSort? sortOrder, String? query}) {
-    return remoteDataSource.fetchProducts(sortOrder: sortOrder, query: query);
-  }
-
-  @override
-  Future<List<Product>> searchProducts(String query, {PriceSort? sortOrder}) {
-    return remoteDataSource.searchProducts(query, sortOrder: sortOrder);
-  }
-
-  @override
-  Future<List<String>> fetchCategories() async {
-    return await remoteDataSource.fetchCategories();
-  }
-
-  @override
-  Future<List<Product>> fetchProductsByCategory(
-    String category, {
+  Future<List<Product>> fetchProducts({
+    String? category,
+    String? query,
     PriceSort? sortOrder,
   }) {
-    print('fetchProductsByCategory calling');
-    return remoteDataSource.fetchProductsByCategory(
-      category,
+    return remoteDataSource.fetchProducts(
+      category: category,
+      query: query,
       sortOrder: sortOrder,
     );
+  }
+
+  @override
+  Future<List<String>> fetchCategories() {
+    return remoteDataSource.fetchCategories();
   }
 }
