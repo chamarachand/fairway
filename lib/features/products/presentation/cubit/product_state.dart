@@ -12,7 +12,7 @@ class ProductsLoaded extends ProductState {
   final List<Product> products;
   final String searchQuery;
 
-  ProductsLoaded({required this.products, required this.searchQuery});
+  ProductsLoaded({required this.products, this.searchQuery = ''});
 }
 
 class ProductsError extends ProductState {

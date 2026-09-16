@@ -1,6 +1,8 @@
 import 'package:fairway/features/products/data/models/product.dart';
+import 'package:fairway/features/products/presentation/cubit/category_cubit.dart';
 import 'package:fairway/features/products/presentation/cubit/product_cubit.dart';
 import 'package:fairway/features/products/presentation/cubit/product_state.dart';
+import 'package:fairway/features/products/presentation/widgets/category_list.dart';
 import 'package:fairway/features/products/presentation/widgets/product_card.dart';
 import 'package:fairway/features/products/presentation/widgets/search_box.dart';
 import 'package:flutter/material.dart';
@@ -17,11 +19,13 @@ class _ProductListScreenState extends State<ProductListScreen> {
   @override
   void initState() {
     super.initState();
+    context.read<CategoryCubit>().fetchCategories();
     context.read<ProductCubit>().getProducts();
   }
 
   @override
   Widget build(BuildContext context) {
+    print('building again');
     return Scaffold(
       appBar: AppBar(
         title: const Text("Products", style: TextStyle(fontWeight: .bold)),
@@ -34,9 +38,12 @@ class _ProductListScreenState extends State<ProductListScreen> {
               child: const SearchBox(),
             ),
           ),
+          const CategoryList(),
+          const SizedBox(height: 8),
           Expanded(
             child: BlocBuilder<ProductCubit, ProductState>(
               builder: (context, state) {
+                print('State is $state');
                 if (state is ProductsLoading) {
                   return const Center(child: CircularProgressIndicator());
                 }

@@ -25,16 +25,26 @@ class ProductCubit extends Cubit<ProductState> {
   Future<void> searchProducts(String query) async {
     emit(ProductsLoading());
 
-    final trimmedQuery = query.trim();
-    if (trimmedQuery.isEmpty) {
-      await getProducts();
-      return;
+    try {
+      final products = await repository.searchProducts(query);
+
+      emit(ProductsLoaded(products: products, searchQuery: query));
+    } on AppException catch (e) {
+      emit(ProductsError(message: e.message));
+    } catch (e) {
+      emit(ProductsError(message: 'Something went wrong. Please try again'));
     }
+  }
+
+  Future<void> filterByCategory(String? category) async {
+    emit(ProductsLoading());
 
     try {
-      final products = await repository.searchProducts(trimmedQuery);
+      final products = (category == null || category.isEmpty)
+          ? await repository.fetchProducts()
+          : await repository.fetchProductsByCategory(category);
 
-      emit(ProductsLoaded(products: products, searchQuery: trimmedQuery));
+      emit(ProductsLoaded(products: products, searchQuery: ''));
     } on AppException catch (e) {
       emit(ProductsError(message: e.message));
     } catch (e) {
