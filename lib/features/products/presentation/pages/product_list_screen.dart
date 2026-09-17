@@ -85,6 +85,12 @@ class _ProductListScreenState extends State<ProductListScreen> {
           ),
         ],
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () async {
+          await context.push<String>('create-product');
+        },
+        child: const Icon(Icons.add),
+      ),
     );
   }
 }

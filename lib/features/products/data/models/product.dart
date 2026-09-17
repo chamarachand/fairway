@@ -24,7 +24,7 @@ class Product {
       description: json['description'] as String,
       category: json['category'] as String,
       price: (json['price'] as num).toDouble(),
-      thumbnail: json['thumbnail'] as String,
+      thumbnail: (json['thumbnail'] ?? '') as String,
       images: json['images'] != null
           ? List<String>.from(json['images'].map((x) => x.toString()))
           : [],

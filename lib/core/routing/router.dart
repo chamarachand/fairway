@@ -1,3 +1,4 @@
+import 'package:fairway/features/create_product/presentation/pages/create_product_screen.dart';
 import 'package:fairway/features/products/data/models/product.dart';
 import 'package:fairway/features/products/presentation/pages/product_details_page.dart';
 import 'package:fairway/features/products/presentation/pages/product_list_screen.dart';
@@ -18,6 +19,11 @@ final router = GoRouter(
 
             return ProductDetailsPage(productId: id, product: product);
           },
+        ),
+
+        GoRoute(
+          path: 'create-product',
+          builder: (context, state) => const CreateProductScreen(),
         ),
       ],
     ),

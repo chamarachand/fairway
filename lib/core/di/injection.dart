@@ -1,5 +1,8 @@
 import 'package:fairway/core/services/api_service.dart';
 import 'package:fairway/core/services/local_storage_service.dart';
+import 'package:fairway/features/create_product/data/datasources/create_product_remote_data_source.dart';
+import 'package:fairway/features/create_product/data/repository/create_product_repository.dart';
+import 'package:fairway/features/create_product/presentation/cubit/create_product_cubit.dart';
 import 'package:fairway/features/products/data/datasources/product_local_data_source.dart';
 import 'package:fairway/features/products/data/datasources/product_remote_data_source.dart';
 import 'package:fairway/features/products/data/repository/product_repository.dart';
@@ -12,6 +15,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 final getIt = GetIt.instance;
 
 Future<void> setUpDependencies() async {
+  // Shared pref
   final prefs = await SharedPreferences.getInstance();
   getIt.registerSingleton<SharedPreferences>(prefs);
 
@@ -32,11 +36,21 @@ Future<void> setUpDependencies() async {
     ),
   );
 
+  getIt.registerLazySingleton<CreateProductRemoteDataSource>(
+    () => CreateProductRemoteDataSourceImpl(apiService: getIt<ApiService>()),
+  );
+
   // Repositories
   getIt.registerLazySingleton<ProductRepository>(
     () => ProductRepositoryImpl(
       remoteDataSource: getIt<ProductRemoteDataSource>(),
       localDataSource: getIt<ProductLocalDataSource>(),
+    ),
+  );
+
+  getIt.registerLazySingleton<CreateProductRepository>(
+    () => CreateProductRepositoryImpl(
+      remoteDataSource: getIt<CreateProductRemoteDataSource>(),
     ),
   );
 
@@ -51,5 +65,9 @@ Future<void> setUpDependencies() async {
 
   getIt.registerFactory<ProductDetailsCubit>(
     () => ProductDetailsCubit(repository: getIt<ProductRepository>()),
+  );
+
+  getIt.registerFactory<CreateProductCubit>(
+    () => CreateProductCubit(repository: getIt<CreateProductRepository>()),
   );
 }

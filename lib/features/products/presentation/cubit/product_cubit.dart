@@ -1,5 +1,6 @@
 import 'package:fairway/core/enums/price_sort.dart';
 import 'package:fairway/core/errors/exceptions.dart';
+import 'package:fairway/features/products/data/models/product.dart';
 import 'package:fairway/features/products/data/repository/product_repository.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -122,5 +123,15 @@ class ProductCubit extends Cubit<ProductState> {
         .toList();
 
     emit(currentState.copyWith(products: newProducts));
+  }
+
+  void addProduct(Product product, {required String category}) async {
+    await _loadProducts(category: category);
+
+    if (state is ProductsLoaded) {
+      final currentState = state as ProductsLoaded;
+      final updatedList = [product, ...currentState.products];
+      emit(currentState.copyWith(products: updatedList));
+    }
   }
 }

@@ -7,4 +7,5 @@ abstract class ApiConstants {
   static String filterByCategory(String category) =>
       '/products/category/$category';
   static String productById(String id) => '/products/$id';
+  static const String addProducts = '/products/add';
 }

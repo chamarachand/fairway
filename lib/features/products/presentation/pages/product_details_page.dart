@@ -105,7 +105,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                                 children: [
                                   Expanded(
                                     flex: 4,
-                                    child: _ProductImage(
+                                    child: _ProductImages(
                                       product: product,
                                       isWideScreen: isWideScreen,
                                     ),
@@ -118,7 +118,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                                 ],
                               )
                             else ...[
-                              _ProductImage(
+                              _ProductImages(
                                 product: product,
                                 isWideScreen: false,
                               ),
@@ -147,17 +147,17 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
   }
 }
 
-class _ProductImage extends StatefulWidget {
+class _ProductImages extends StatefulWidget {
   final Product product;
   final bool isWideScreen;
 
-  const _ProductImage({required this.product, required this.isWideScreen});
+  const _ProductImages({required this.product, required this.isWideScreen});
 
   @override
-  State<_ProductImage> createState() => _ProductImageState();
+  State<_ProductImages> createState() => _ProductImageState();
 }
 
-class _ProductImageState extends State<_ProductImage> {
+class _ProductImageState extends State<_ProductImages> {
   int _currentIndex = 0;
 
   @override
@@ -175,18 +175,29 @@ class _ProductImageState extends State<_ProductImage> {
             itemCount: images.length,
             onPageChanged: (index) => setState(() => _currentIndex = index),
             itemBuilder: (context, index) {
-              return CachedNetworkImage(
-                imageUrl: images[index],
-                fit: BoxFit.contain,
-                fadeInDuration: Duration.zero,
-                placeholder: (context, url) =>
-                    const Center(child: CircularProgressIndicator()),
-                errorWidget: (context, url, error) =>
-                    const Icon(Icons.image_not_supported, size: 80),
-              );
+              final imageUrl = images[index];
+              print(imageUrl);
+
+              if (imageUrl.isEmpty) {
+                print('is empty');
+                return const Center(
+                  child: Icon(Icons.image_not_supported, size: 80),
+                );
+              } else {
+                return CachedNetworkImage(
+                  imageUrl: images[index],
+                  fit: BoxFit.contain,
+                  fadeInDuration: Duration.zero,
+                  placeholder: (context, url) =>
+                      const Center(child: CircularProgressIndicator()),
+                  errorWidget: (context, url, error) =>
+                      const Icon(Icons.image_not_supported, size: 80),
+                );
+              }
             },
           ),
-          if (images.isNotEmpty)
+
+          if (images.any((img) => img.trim().isNotEmpty))
             Padding(
               padding: const EdgeInsets.all(12),
               child: Container(
