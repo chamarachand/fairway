@@ -2,6 +2,7 @@ import 'package:fairway/core/di/injection.dart';
 import 'package:fairway/core/routing/router.dart';
 import 'package:fairway/features/products/presentation/cubit/category_cubit.dart';
 import 'package:fairway/features/products/presentation/cubit/product_cubit.dart';
+import 'package:fairway/features/products/presentation/cubit/product_details_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -19,6 +20,9 @@ class MyApp extends StatelessWidget {
       providers: [
         BlocProvider(create: (_) => getIt<CategoryCubit>()),
         BlocProvider(create: (_) => getIt<ProductCubit>()),
+        BlocProvider(
+          create: (_) => getIt<ProductDetailsCubit>(),
+        ), // change later
       ],
       child: MaterialApp.router(
         title: 'Fairway',

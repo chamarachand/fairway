@@ -11,6 +11,7 @@ abstract class ProductRepository {
     int skip = 0,
   });
   Future<List<String>> fetchCategories();
+  Future<Product> getProductById(String id);
 }
 
 class ProductRepositoryImpl implements ProductRepository {
@@ -38,5 +39,10 @@ class ProductRepositoryImpl implements ProductRepository {
   @override
   Future<List<String>> fetchCategories() {
     return remoteDataSource.fetchCategories();
+  }
+
+  @override
+  Future<Product> getProductById(String id) async {
+    return await remoteDataSource.getProductById(id);
   }
 }

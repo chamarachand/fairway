@@ -3,6 +3,7 @@ import 'package:fairway/features/products/data/datasources/product_remote_data_s
 import 'package:fairway/features/products/data/repository/product_repository.dart';
 import 'package:fairway/features/products/presentation/cubit/category_cubit.dart';
 import 'package:fairway/features/products/presentation/cubit/product_cubit.dart';
+import 'package:fairway/features/products/presentation/cubit/product_details_cubit.dart';
 import 'package:get_it/get_it.dart';
 
 final getIt = GetIt.instance;
@@ -30,5 +31,9 @@ void setUpDependencies() {
 
   getIt.registerFactory<CategoryCubit>(
     () => CategoryCubit(repository: getIt<ProductRepository>()),
+  );
+
+  getIt.registerFactory<ProductDetailsCubit>(
+    () => ProductDetailsCubit(repository: getIt<ProductRepository>()),
   );
 }

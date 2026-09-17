@@ -9,6 +9,7 @@ import 'package:fairway/features/products/presentation/widgets/search_box.dart';
 import 'package:fairway/features/products/presentation/widgets/sort_popup_menu.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 class ProductListScreen extends StatefulWidget {
   const ProductListScreen({super.key});
@@ -193,35 +194,6 @@ class _ProductsGridViewState extends State<_ProductsGridView> {
     super.dispose();
   }
 
-  // @override
-  // Widget build(BuildContext context) {
-  //   return RefreshIndicator(
-  //     onRefresh: () async {
-  //       final categoryState = context.read<CategoryCubit>().state;
-
-  //       final currentCategory = (categoryState is CategoryLoaded)
-  //           ? categoryState.selectedCategory
-  //           : null;
-
-  //       await context.read<ProductCubit>().refreshProducts(currentCategory);
-  //     },
-  //     child: GridView.builder(
-  //       padding: const EdgeInsets.symmetric(horizontal: 10),
-  //       gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-  //         maxCrossAxisExtent: 220,
-  //         childAspectRatio: 0.63,
-  //       ),
-
-  //       itemCount: widget.displayProducts.length,
-  //       itemBuilder: (context, index) {
-  //         final product = widget.displayProducts[index];
-
-  //         return ProductCard(product: product, onTap: () {});
-  //       },
-  //     ),
-  //   );
-  // }
-
   @override
   Widget build(BuildContext context) {
     return RefreshIndicator(
@@ -243,13 +215,15 @@ class _ProductsGridViewState extends State<_ProductsGridView> {
                 maxCrossAxisExtent: 220,
                 childAspectRatio: 0.63,
               ),
-              delegate: SliverChildBuilderDelegate(
-                (context, index) => ProductCard(
-                  product: widget.displayProducts[index],
-                  onTap: () {},
-                ),
-                childCount: widget.displayProducts.length,
-              ),
+              delegate: SliverChildBuilderDelegate((context, index) {
+                final product = widget.displayProducts[index];
+                return ProductCard(
+                  product: product,
+                  onTap: () {
+                    context.push('/product/${product.id}', extra: product);
+                  },
+                );
+              }, childCount: widget.displayProducts.length),
             ),
           ),
           if (widget.isLoadingMore)

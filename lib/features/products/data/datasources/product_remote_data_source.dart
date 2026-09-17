@@ -12,6 +12,7 @@ abstract class ProductRemoteDataSource {
     int skip = 0,
   });
   Future<List<String>> fetchCategories();
+  Future<Product> getProductById(String id);
 }
 
 class ProductRemoteDataSourceImpl implements ProductRemoteDataSource {
@@ -58,5 +59,11 @@ class ProductRemoteDataSourceImpl implements ProductRemoteDataSource {
   Future<List<String>> fetchCategories() async {
     final data = await apiService.get(ApiConstants.categories);
     return List<String>.from(data);
+  }
+
+  @override
+  Future<Product> getProductById(String id) async {
+    final data = await apiService.get(ApiConstants.productById(id));
+    return Product.fromJson(data.data);
   }
 }
