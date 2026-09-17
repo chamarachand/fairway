@@ -263,6 +263,31 @@ class _ProductInfo extends StatelessWidget {
             product.description,
             style: Theme.of(context).textTheme.bodyLarge,
           ),
+
+          Padding(
+            padding: const EdgeInsets.all(12),
+            child: Column(
+              children: [
+                if (product.stock > 0)
+                  _DetailTile(
+                    label: 'Stock',
+                    value: '${product.stock} items available',
+                  ),
+                if (product.weight > 0)
+                  _DetailTile(label: 'Weight', value: '${product.weight} kg'),
+                if (product.warrantyInformation.isNotEmpty)
+                  _DetailTile(
+                    label: 'Warranty',
+                    value: product.warrantyInformation,
+                  ),
+                if (product.shippingInformation.isNotEmpty)
+                  _DetailTile(
+                    label: 'Shipping',
+                    value: product.shippingInformation,
+                  ),
+              ],
+            ),
+          ),
         ],
       ),
     );
@@ -322,6 +347,32 @@ class _SimilarProdutsListView extends StatelessWidget {
           },
         ),
       ],
+    );
+  }
+}
+
+class _DetailTile extends StatelessWidget {
+  final String label;
+  final String value;
+
+  const _DetailTile({required this.label, required this.value});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 2),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(
+            width: 160, // Fixed width ensures all values align perfectly
+            child: Text(label, style: TextStyle(fontWeight: FontWeight.w600)),
+          ),
+          Expanded(
+            child: Text(value, style: Theme.of(context).textTheme.bodyMedium),
+          ),
+        ],
+      ),
     );
   }
 }
