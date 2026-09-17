@@ -64,6 +64,6 @@ class ProductRemoteDataSourceImpl implements ProductRemoteDataSource {
   @override
   Future<Product> getProductById(String id) async {
     final data = await apiService.get(ApiConstants.productById(id));
-    return Product.fromJson(data.data);
+    return Product.fromJson(data);
   }
 }

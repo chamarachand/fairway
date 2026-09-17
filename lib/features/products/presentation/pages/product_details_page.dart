@@ -134,6 +134,11 @@ class _ProductImageState extends State<_ProductImage> {
               return CachedNetworkImage(
                 imageUrl: images[index],
                 fit: BoxFit.contain,
+                fadeInDuration: Duration.zero,
+                placeholder: (context, url) =>
+                    const Center(child: CircularProgressIndicator()),
+                errorWidget: (context, url, error) =>
+                    const Icon(Icons.image_not_supported, size: 80),
               );
             },
           ),

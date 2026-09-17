@@ -6,5 +6,5 @@ abstract class ApiConstants {
   static String productSearch = '/products/search';
   static String filterByCategory(String category) =>
       '/products/category/$category';
-  static String productById(String id) => '/products/category/$id';
+  static String productById(String id) => '/products/$id';
 }
