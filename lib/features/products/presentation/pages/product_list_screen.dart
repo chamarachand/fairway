@@ -1,3 +1,4 @@
+import 'package:fairway/core/widgets/theme_toggle_button.dart';
 import 'package:fairway/features/products/data/models/product.dart';
 import 'package:fairway/features/products/presentation/cubit/product_cubit.dart';
 import 'package:fairway/features/products/presentation/cubit/product_state.dart';
@@ -29,7 +30,7 @@ class _ProductListScreenState extends State<ProductListScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Products", style: TextStyle(fontWeight: .bold)),
-        actions: const [SortPopupMenu()],
+        actions: const [SortPopupMenu(), ThemeToggleButton()],
       ),
       body: Column(
         children: [

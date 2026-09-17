@@ -8,6 +8,15 @@ class LocalStorageService {
   LocalStorageService(this._prefs);
 
   static const String _cachedProductsKey = 'cached_products';
+  static const String _themeModeKey = 'is_dark_mode';
+
+  bool getIsDarkMode() {
+    return _prefs.getBool(_themeModeKey) ?? false;
+  }
+
+  Future<void> saveIsDarkMode(bool isDrakMode) async {
+    await _prefs.setBool(_themeModeKey, isDrakMode);
+  }
 
   List<Product>? getProducts() {
     final jsonString = _prefs.getString(_cachedProductsKey);

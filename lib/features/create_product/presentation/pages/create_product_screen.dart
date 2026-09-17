@@ -1,4 +1,5 @@
 import 'package:fairway/core/utils/snack_bar_helper.dart';
+import 'package:fairway/core/widgets/theme_toggle_button.dart';
 import 'package:fairway/features/create_product/presentation/cubit/create_product_cubit.dart';
 import 'package:fairway/features/create_product/presentation/cubit/create_product_state.dart';
 import 'package:fairway/features/products/presentation/cubit/category_cubit.dart';
@@ -54,6 +55,7 @@ class _CreateProductScreenState extends State<CreateProductScreen> {
           "Create Listing",
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
+        actions: const [ThemeToggleButton()],
       ),
       body: BlocConsumer<CreateProductCubit, CreateProductState>(
         listener: (context, state) {

@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:fairway/core/constants/app_constants.dart';
 import 'package:fairway/core/utils/snack_bar_helper.dart';
+import 'package:fairway/core/widgets/theme_toggle_button.dart';
 import 'package:fairway/features/products/data/models/product.dart';
 import 'package:fairway/features/products/presentation/cubit/product_details_cubit.dart';
 import 'package:fairway/features/products/presentation/cubit/product_details_state.dart';
@@ -78,6 +79,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
               );
             },
           ),
+          const ThemeToggleButton(),
         ],
       ),
       body: SingleChildScrollView(
@@ -108,6 +110,9 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                                   Expanded(
                                     flex: 4,
                                     child: _ProductImages(
+                                      key: const ValueKey(
+                                        'product_images_widget',
+                                      ),
                                       product: product,
                                       isWideScreen: isWideScreen,
                                     ),
@@ -121,6 +126,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                               )
                             else ...[
                               _ProductImages(
+                                key: const ValueKey('product_images_widget'),
                                 product: product,
                                 isWideScreen: false,
                               ),
@@ -153,7 +159,11 @@ class _ProductImages extends StatefulWidget {
   final Product product;
   final bool isWideScreen;
 
-  const _ProductImages({required this.product, required this.isWideScreen});
+  const _ProductImages({
+    super.key,
+    required this.product,
+    required this.isWideScreen,
+  });
 
   @override
   State<_ProductImages> createState() => _ProductImageState();

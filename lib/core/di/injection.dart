@@ -9,6 +9,7 @@ import 'package:fairway/features/products/data/repository/product_repository.dar
 import 'package:fairway/features/products/presentation/cubit/category_cubit.dart';
 import 'package:fairway/features/products/presentation/cubit/product_cubit.dart';
 import 'package:fairway/features/products/presentation/cubit/product_details_cubit.dart';
+import 'package:fairway/features/theme/theme_cubit.dart';
 import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -69,5 +70,9 @@ Future<void> setUpDependencies() async {
 
   getIt.registerFactory<CreateProductCubit>(
     () => CreateProductCubit(repository: getIt<CreateProductRepository>()),
+  );
+
+  getIt.registerFactory<ThemeCubit>(
+    () => ThemeCubit(localStorageService: getIt<LocalStorageService>()),
   );
 }
