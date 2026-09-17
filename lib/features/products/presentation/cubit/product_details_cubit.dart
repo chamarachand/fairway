@@ -56,7 +56,9 @@ class ProductDetailsCubit extends Cubit<ProductDetailState> {
 
   Future<bool> deleteProduct() async {
     final currentState = state;
+
     if (currentState is! ProductDetailsLoaded) return false;
+    if (currentState.product.id == 195) return true; // local product
 
     emit(currentState.copyWith(isDeleting: true));
 
