@@ -2,13 +2,18 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:fairway/core/constants/api_constants.dart';
 import 'package:fairway/core/errors/exceptions.dart';
-import 'package:flutter/widgets.dart';
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 
 class ApiService {
-  Future<dynamic> get(String url) async {
-    final uri = Uri.parse(url);
+  Future<dynamic> get(
+    String path, {
+    Map<String, String>? queryParameters,
+  }) async {
+    final uri = Uri.https(ApiConstants.baseUrl, path, queryParameters);
+    if (kDebugMode) debugPrint('url: ${uri.toString()}');
 
     try {
       final response = await http.get(uri).timeout(const Duration(seconds: 10));

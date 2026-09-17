@@ -63,7 +63,10 @@ class _ProductListScreenState extends State<ProductListScreen> {
                     );
                   }
 
-                  return _ProductsGridView(displayProducts: state.products);
+                  return _ProductsGridView(
+                    displayProducts: state.products,
+                    isLoadingMore: state.isLoadingMore,
+                  );
                 }
 
                 return const SizedBox.shrink();
@@ -147,36 +150,116 @@ class _ProductErrorView extends StatelessWidget {
   }
 }
 
-class _ProductsGridView extends StatelessWidget {
+class _ProductsGridView extends StatefulWidget {
   final List<Product> displayProducts;
+  final bool isLoadingMore;
 
-  const _ProductsGridView({required this.displayProducts});
+  const _ProductsGridView({
+    required this.displayProducts,
+    required this.isLoadingMore,
+  });
+
+  @override
+  State<_ProductsGridView> createState() => _ProductsGridViewState();
+}
+
+class _ProductsGridViewState extends State<_ProductsGridView> {
+  final ScrollController _scrollController = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController.addListener(_onScroll);
+  }
+
+  void _onScroll() {
+    if (widget.isLoadingMore) return;
+
+    if (_scrollController.position.pixels >=
+        _scrollController.position.maxScrollExtent - 200) {
+      //
+      final categoryState = context.read<CategoryCubit>().state;
+      final currentCategory = (categoryState is CategoryLoaded)
+          ? categoryState.selectedCategory
+          : null;
+
+      context.read<ProductCubit>().loadMoreProducts(category: currentCategory);
+    }
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  // @override
+  // Widget build(BuildContext context) {
+  //   return RefreshIndicator(
+  //     onRefresh: () async {
+  //       final categoryState = context.read<CategoryCubit>().state;
+
+  //       final currentCategory = (categoryState is CategoryLoaded)
+  //           ? categoryState.selectedCategory
+  //           : null;
+
+  //       await context.read<ProductCubit>().refreshProducts(currentCategory);
+  //     },
+  //     child: GridView.builder(
+  //       padding: const EdgeInsets.symmetric(horizontal: 10),
+  //       gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+  //         maxCrossAxisExtent: 220,
+  //         childAspectRatio: 0.63,
+  //       ),
+
+  //       itemCount: widget.displayProducts.length,
+  //       itemBuilder: (context, index) {
+  //         final product = widget.displayProducts[index];
+
+  //         return ProductCard(product: product, onTap: () {});
+  //       },
+  //     ),
+  //   );
+  // }
 
   @override
   Widget build(BuildContext context) {
     return RefreshIndicator(
       onRefresh: () async {
         final categoryState = context.read<CategoryCubit>().state;
-
         final currentCategory = (categoryState is CategoryLoaded)
             ? categoryState.selectedCategory
             : null;
-
         await context.read<ProductCubit>().refreshProducts(currentCategory);
       },
-      child: GridView.builder(
-        padding: const EdgeInsets.symmetric(horizontal: 10),
-        gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-          maxCrossAxisExtent: 220,
-          childAspectRatio: 0.63,
-        ),
-
-        itemCount: displayProducts.length,
-        itemBuilder: (context, index) {
-          final product = displayProducts[index];
-
-          return ProductCard(product: product, onTap: () {});
-        },
+      child: CustomScrollView(
+        controller: _scrollController,
+        physics: const AlwaysScrollableScrollPhysics(),
+        slivers: [
+          SliverPadding(
+            padding: const EdgeInsets.symmetric(horizontal: 10),
+            sliver: SliverGrid(
+              gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+                maxCrossAxisExtent: 220,
+                childAspectRatio: 0.63,
+              ),
+              delegate: SliverChildBuilderDelegate(
+                (context, index) => ProductCard(
+                  product: widget.displayProducts[index],
+                  onTap: () {},
+                ),
+                childCount: widget.displayProducts.length,
+              ),
+            ),
+          ),
+          if (widget.isLoadingMore)
+            const SliverToBoxAdapter(
+              child: Padding(
+                padding: EdgeInsets.symmetric(vertical: 16.0),
+                child: Center(child: CircularProgressIndicator()),
+              ),
+            ),
+        ],
       ),
     );
   }

@@ -13,12 +13,32 @@ class ProductsLoaded extends ProductState {
   final List<Product> products;
   final String searchQuery;
   final PriceSort priceSort;
+  final bool isLast;
+  final bool isLoadingMore;
 
   ProductsLoaded({
     required this.products,
     this.searchQuery = '',
     this.priceSort = PriceSort.none,
+    this.isLast = false,
+    this.isLoadingMore = false,
   });
+
+  ProductsLoaded copyWith({
+    List<Product>? products,
+    String? searchQuery,
+    PriceSort? priceSort,
+    bool? isLast,
+    bool? isLoadingMore,
+  }) {
+    return ProductsLoaded(
+      products: products ?? this.products,
+      searchQuery: searchQuery ?? this.searchQuery,
+      priceSort: priceSort ?? this.priceSort,
+      isLast: isLast ?? this.isLast,
+      isLoadingMore: isLoadingMore ?? this.isLoadingMore,
+    );
+  }
 }
 
 class ProductsError extends ProductState {

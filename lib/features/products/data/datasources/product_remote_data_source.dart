@@ -8,6 +8,8 @@ abstract class ProductRemoteDataSource {
     String? category,
     String? query,
     PriceSort? sortOrder,
+    int limit = 10,
+    int skip = 0,
   });
   Future<List<String>> fetchCategories();
 }
@@ -22,18 +24,30 @@ class ProductRemoteDataSourceImpl implements ProductRemoteDataSource {
     String? category,
     String? query,
     PriceSort? sortOrder,
+    int limit = 10,
+    int skip = 0,
   }) async {
-    final String url;
+    late String path;
 
     if (category != null && category.isNotEmpty) {
-      url = ApiConstants.filterByCategory(category, order: sortOrder?.order);
+      path = ApiConstants.filterByCategory(category);
     } else if (query != null && query.isNotEmpty) {
-      url = ApiConstants.productSearch(query, order: sortOrder?.order);
+      path = ApiConstants.productSearch;
     } else {
-      url = ApiConstants.products(order: sortOrder?.order);
+      path = ApiConstants.products;
     }
 
-    final data = await apiService.get(url);
+    final queryParams = {
+      if (query != null && query.isNotEmpty) 'q': query,
+      'limit': limit.toString(),
+      'skip': skip.toString(),
+      if (sortOrder != null && sortOrder.order != null) ...{
+        'sortBy': 'price',
+        'order': sortOrder.order!,
+      },
+    };
+
+    final data = await apiService.get(path, queryParameters: queryParams);
 
     return (data['products'] as List)
         .map((product) => Product.fromJson(product))

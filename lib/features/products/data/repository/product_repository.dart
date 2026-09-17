@@ -7,6 +7,8 @@ abstract class ProductRepository {
     String? category,
     String? query,
     PriceSort? sortOrder,
+    int limit = 10,
+    int skip = 0,
   });
   Future<List<String>> fetchCategories();
 }
@@ -21,11 +23,15 @@ class ProductRepositoryImpl implements ProductRepository {
     String? category,
     String? query,
     PriceSort? sortOrder,
+    int limit = 10,
+    int skip = 0,
   }) {
     return remoteDataSource.fetchProducts(
       category: category,
       query: query,
       sortOrder: sortOrder,
+      limit: limit,
+      skip: skip,
     );
   }
 

@@ -7,6 +7,7 @@ import 'package:fairway/features/products/presentation/cubit/product_state.dart'
 
 class ProductCubit extends Cubit<ProductState> {
   final ProductRepository repository;
+  static const int _limit = 20;
 
   ProductCubit({required this.repository}) : super(ProductInitial());
 
@@ -58,6 +59,8 @@ class ProductCubit extends Cubit<ProductState> {
         category: targetCategory,
         query: targetQuery,
         sortOrder: targerSortOption,
+        limit: _limit,
+        skip: 0,
       );
 
       emit(
@@ -65,12 +68,46 @@ class ProductCubit extends Cubit<ProductState> {
           products: products,
           searchQuery: targetQuery,
           priceSort: targerSortOption,
+          isLast: products.length < _limit,
         ),
       );
     } on AppException catch (e) {
       emit(ProductsError(message: e.message));
     } catch (e) {
       emit(ProductsError(message: 'Something went wrong. Please try again'));
+    }
+  }
+
+  Future<void> loadMoreProducts({String? category}) async {
+    if (state is! ProductsLoaded) return;
+    final currentState = state as ProductsLoaded;
+
+    if (currentState.isLast || currentState.isLoadingMore) return;
+
+    emit(currentState.copyWith(isLoadingMore: true));
+
+    try {
+      final newProducts = await repository.fetchProducts(
+        category: category,
+        query: currentState.searchQuery,
+        sortOrder: currentState.priceSort,
+        limit: _limit,
+        skip: currentState.products.length,
+      );
+
+      if (newProducts.isEmpty) {
+        emit(currentState.copyWith(isLast: true, isLoadingMore: false));
+      } else {
+        emit(
+          currentState.copyWith(
+            products: List.of(currentState.products)..addAll(newProducts),
+            isLast: newProducts.length < _limit,
+            isLoadingMore: false,
+          ),
+        );
+      }
+    } catch (_) {
+      emit(currentState.copyWith(isLoadingMore: false));
     }
   }
 }
