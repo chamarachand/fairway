@@ -1,8 +1,7 @@
 import 'dart:async';
 
-import 'package:fairway/features/products/presentation/cubit/category_cubit.dart';
-import 'package:fairway/features/products/presentation/cubit/category_state.dart';
 import 'package:fairway/features/products/presentation/cubit/product_cubit.dart';
+import 'package:fairway/features/products/presentation/cubit/product_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -45,7 +44,6 @@ class _SearchBoxState extends State<SearchBox> {
       final trimmed = value.trim();
 
       if (trimmed.isNotEmpty) {
-        context.read<CategoryCubit>().changeCategory(null);
         context.read<ProductCubit>().searchProducts(value);
       } else {
         context.read<ProductCubit>().getProducts();
@@ -58,10 +56,10 @@ class _SearchBoxState extends State<SearchBox> {
     final colorScheme = Theme.of(context).colorScheme;
     final borderRadius = BorderRadius.circular(12);
 
-    return BlocListener<CategoryCubit, CategoryState>(
+    return BlocListener<ProductCubit, ProductState>(
       listenWhen: (previous, current) {
-        if (current is CategoryLoaded) {
-          return current.selectedCategory != null;
+        if (current is ProductsLoaded) {
+          return current.category != null;
         }
         return false;
       },

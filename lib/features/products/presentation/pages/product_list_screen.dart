@@ -1,6 +1,4 @@
 import 'package:fairway/features/products/data/models/product.dart';
-import 'package:fairway/features/products/presentation/cubit/category_cubit.dart';
-import 'package:fairway/features/products/presentation/cubit/category_state.dart';
 import 'package:fairway/features/products/presentation/cubit/product_cubit.dart';
 import 'package:fairway/features/products/presentation/cubit/product_state.dart';
 import 'package:fairway/features/products/presentation/widgets/category_list.dart';
@@ -23,7 +21,6 @@ class _ProductListScreenState extends State<ProductListScreen> {
   @override
   void initState() {
     super.initState();
-    context.read<CategoryCubit>().fetchCategories();
     context.read<ProductCubit>().getProducts();
   }
 
@@ -193,13 +190,7 @@ class _ProductsGridViewState extends State<_ProductsGridView> {
 
     if (_scrollController.position.pixels >=
         _scrollController.position.maxScrollExtent - 200) {
-      //
-      final categoryState = context.read<CategoryCubit>().state;
-      final currentCategory = (categoryState is CategoryLoaded)
-          ? categoryState.selectedCategory
-          : null;
-
-      context.read<ProductCubit>().loadMoreProducts(category: currentCategory);
+      context.read<ProductCubit>().loadMoreProducts();
     }
   }
 
@@ -213,11 +204,7 @@ class _ProductsGridViewState extends State<_ProductsGridView> {
   Widget build(BuildContext context) {
     return RefreshIndicator(
       onRefresh: () async {
-        final categoryState = context.read<CategoryCubit>().state;
-        final currentCategory = (categoryState is CategoryLoaded)
-            ? categoryState.selectedCategory
-            : null;
-        await context.read<ProductCubit>().refreshProducts(currentCategory);
+        await context.read<ProductCubit>().refreshProducts();
       },
       child: CustomScrollView(
         controller: _scrollController,

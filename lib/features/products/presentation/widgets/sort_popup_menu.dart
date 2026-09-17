@@ -1,6 +1,4 @@
 import 'package:fairway/core/enums/price_sort.dart';
-import 'package:fairway/features/products/presentation/cubit/category_cubit.dart';
-import 'package:fairway/features/products/presentation/cubit/category_state.dart';
 import 'package:fairway/features/products/presentation/cubit/product_cubit.dart';
 import 'package:fairway/features/products/presentation/cubit/product_state.dart';
 import 'package:flutter/material.dart';
@@ -17,18 +15,12 @@ class SortPopupMenu extends StatelessWidget {
             ? state.priceSort
             : PriceSort.none;
 
+        final currentCategory = state is ProductsLoaded ? state.category : null;
+
         return PopupMenuButton<PriceSort>(
           icon: const Icon(Icons.sort),
           initialValue: currentSort,
           onSelected: (PriceSort newOrder) {
-            final categoryState = context.read<CategoryCubit>().state;
-
-            final currentCategory = (categoryState is CategoryLoaded)
-                ? categoryState.selectedCategory
-                : null;
-
-            print('current category: $currentCategory');
-
             context.read<ProductCubit>().sortByPrice(
               newOrder,
               category: currentCategory,

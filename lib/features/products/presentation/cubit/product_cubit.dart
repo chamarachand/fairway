@@ -2,6 +2,7 @@ import 'package:fairway/core/enums/price_sort.dart';
 import 'package:fairway/core/errors/exceptions.dart';
 import 'package:fairway/features/products/data/models/product.dart';
 import 'package:fairway/features/products/data/repository/product_repository.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:fairway/features/products/presentation/cubit/product_state.dart';
@@ -22,12 +23,19 @@ class ProductCubit extends Cubit<ProductState> {
         : PriceSort.none;
   }
 
+  String? getCurrentCategory() {
+    if (state is ProductsLoaded) {
+      return (state as ProductsLoaded).category;
+    }
+    return null;
+  }
+
   Future<void> getProducts() async {
     await _loadProducts(clearQuery: true);
   }
 
-  Future<void> refreshProducts(String? category) async {
-    await _loadProducts(category: category);
+  Future<void> refreshProducts() async {
+    await _loadProducts(category: getCurrentCategory());
   }
 
   Future<void> searchProducts(String query) async {
@@ -35,7 +43,11 @@ class ProductCubit extends Cubit<ProductState> {
   }
 
   Future<void> filterByCategory(String? category) async {
-    await _loadProducts(category: category, clearQuery: true);
+    if (category == 'ALL') {
+      await _loadProducts(clearCategory: true, clearQuery: true);
+    } else {
+      await _loadProducts(category: category, clearQuery: true);
+    }
   }
 
   Future<void> sortByPrice(PriceSort sort, {String? category}) async {
@@ -49,13 +61,16 @@ class ProductCubit extends Cubit<ProductState> {
     bool clearQuery = false,
     bool clearCategory = false,
   }) async {
-    final targetCategory = clearCategory ? null : category;
+    final targetCategory = clearCategory
+        ? null
+        : (category ?? getCurrentCategory());
     final targetQuery = clearQuery ? '' : (query ?? getCurrentQuery());
     final targerSortOption = sortOption ?? getCurrentSortOption();
 
-    emit(ProductsLoading());
+    emit(ProductsLoading(category: targetCategory));
 
     try {
+      debugPrint('category: $category');
       final (:products, :isOffline) = await repository.fetchProducts(
         category: targetCategory,
         query: targetQuery,
@@ -68,19 +83,25 @@ class ProductCubit extends Cubit<ProductState> {
         ProductsLoaded(
           products: products,
           searchQuery: targetQuery,
+          category: isOffline ? null : category,
           priceSort: targerSortOption,
           isLast: products.length < _limit,
           isOffline: isOffline,
         ),
       );
     } on AppException catch (e) {
-      emit(ProductsError(message: e.message));
+      emit(ProductsError(message: e.message, category: targetCategory));
     } catch (e) {
-      emit(ProductsError(message: 'Something went wrong. Please try again'));
+      emit(
+        ProductsError(
+          message: 'Something went wrong. Please try again',
+          category: category,
+        ),
+      );
     }
   }
 
-  Future<void> loadMoreProducts({String? category}) async {
+  Future<void> loadMoreProducts() async {
     if (state is! ProductsLoaded) return;
     final currentState = state as ProductsLoaded;
 
@@ -91,7 +112,7 @@ class ProductCubit extends Cubit<ProductState> {
     try {
       final (products: newProducts, :isOffline) = await repository
           .fetchProducts(
-            category: category,
+            category: currentState.category,
             query: currentState.searchQuery,
             sortOrder: currentState.priceSort,
             limit: _limit,

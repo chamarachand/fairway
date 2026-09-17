@@ -9,7 +9,6 @@ class CategoryLoading extends CategoryState {}
 
 class CategoryLoaded extends CategoryState {
   final List<String> categories;
-  final String? selectedCategory;
 
-  CategoryLoaded({required this.categories, this.selectedCategory});
+  CategoryLoaded({required this.categories});
 }

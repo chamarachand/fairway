@@ -6,13 +6,15 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class CategoryCubit extends Cubit<CategoryState> {
   final ProductRepository repository;
 
-  CategoryCubit({required this.repository}) : super(CategoryInitial());
+  CategoryCubit({required this.repository}) : super(CategoryInitial()) {
+    fetchCategories();
+  }
 
   Future<void> fetchCategories() async {
     emit(CategoryLoading());
     try {
       final categories = await repository.fetchCategories();
-      emit(CategoryLoaded(categories: categories, selectedCategory: null));
+      emit(CategoryLoaded(categories: categories));
     } catch (e) {
       debugPrint('fetchCategories error: $e');
     }
@@ -21,14 +23,7 @@ class CategoryCubit extends Cubit<CategoryState> {
   void changeCategory(String? category) {
     if (state is CategoryLoaded) {
       final current = state as CategoryLoaded;
-      final isAll = (category == null || category == 'All');
-
-      emit(
-        CategoryLoaded(
-          categories: current.categories,
-          selectedCategory: isAll ? null : category,
-        ),
-      );
+      emit(CategoryLoaded(categories: current.categories));
     }
   }
 }
