@@ -1,10 +1,11 @@
 import 'package:fairway/core/widgets/theme_toggle_button.dart';
-import 'package:fairway/features/products/data/models/product.dart';
 import 'package:fairway/features/products/presentation/cubit/product_cubit.dart';
 import 'package:fairway/features/products/presentation/cubit/product_state.dart';
 import 'package:fairway/features/products/presentation/widgets/category_list.dart';
 import 'package:fairway/features/products/presentation/widgets/offline_banner.dart';
-import 'package:fairway/features/products/presentation/widgets/product_card.dart';
+import 'package:fairway/features/products/presentation/widgets/product_empty_view.dart';
+import 'package:fairway/features/products/presentation/widgets/product_error_view.dart';
+import 'package:fairway/features/products/presentation/widgets/products_grid_view.dart';
 import 'package:fairway/features/products/presentation/widgets/search_box.dart';
 import 'package:fairway/features/products/presentation/widgets/sort_popup_menu.dart';
 import 'package:flutter/material.dart';
@@ -58,7 +59,7 @@ class _ProductListScreenState extends State<ProductListScreen> {
                 }
 
                 if (state is ProductsError) {
-                  return _ProductErrorView(
+                  return ProductErrorView(
                     msg: state.message,
                     onRetry: () => context.read<ProductCubit>().getProducts(),
                   );
@@ -66,12 +67,12 @@ class _ProductListScreenState extends State<ProductListScreen> {
 
                 if (state is ProductsLoaded) {
                   if (state.products.isEmpty) {
-                    return _ProductEmptyView(
+                    return ProductEmptyView(
                       isSearchActive: state.searchQuery.isNotEmpty,
                     );
                   }
 
-                  return _ProductsGridView(
+                  return ProductsGridView(
                     displayProducts: state.products,
                     isLoadingMore: state.isLoadingMore,
                   );
@@ -88,162 +89,6 @@ class _ProductListScreenState extends State<ProductListScreen> {
           await context.push<String>('create-product');
         },
         child: const Icon(Icons.add),
-      ),
-    );
-  }
-}
-
-class _ProductEmptyView extends StatelessWidget {
-  final bool isSearchActive;
-
-  const _ProductEmptyView({required this.isSearchActive});
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 24.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              isSearchActive ? Icons.search_off : Icons.inventory_2_outlined,
-              size: 60,
-              color: Theme.of(context).disabledColor,
-            ),
-            const SizedBox(height: 16),
-            Text(
-              isSearchActive
-                  ? "No products match your search"
-                  : "No products available",
-              textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.bodyLarge,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _ProductErrorView extends StatelessWidget {
-  final String msg;
-  final VoidCallback onRetry;
-
-  const _ProductErrorView({required this.msg, required this.onRetry});
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 24),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              Icons.error_outline_outlined,
-              size: 60,
-              color: Theme.of(context).disabledColor,
-            ),
-            const SizedBox(height: 16),
-            Text(
-              msg,
-              textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.bodyLarge,
-            ),
-            const SizedBox(height: 16),
-            FilledButton.icon(
-              onPressed: onRetry,
-              icon: const Icon(Icons.refresh),
-              label: const Text('Retry'),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _ProductsGridView extends StatefulWidget {
-  final List<Product> displayProducts;
-  final bool isLoadingMore;
-
-  const _ProductsGridView({
-    required this.displayProducts,
-    required this.isLoadingMore,
-  });
-
-  @override
-  State<_ProductsGridView> createState() => _ProductsGridViewState();
-}
-
-class _ProductsGridViewState extends State<_ProductsGridView> {
-  final ScrollController _scrollController = ScrollController();
-
-  @override
-  void initState() {
-    super.initState();
-    _scrollController.addListener(_onScroll);
-  }
-
-  void _onScroll() {
-    if (widget.isLoadingMore) return;
-
-    if (_scrollController.position.pixels >=
-        _scrollController.position.maxScrollExtent - 200) {
-      context.read<ProductCubit>().loadMoreProducts();
-    }
-  }
-
-  @override
-  void dispose() {
-    _scrollController.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return RefreshIndicator(
-      onRefresh: () async {
-        await context.read<ProductCubit>().refreshProducts();
-      },
-      child: CustomScrollView(
-        controller: _scrollController,
-        physics: const AlwaysScrollableScrollPhysics(),
-        slivers: [
-          SliverPadding(
-            padding: const EdgeInsets.symmetric(horizontal: 10),
-            sliver: SliverGrid(
-              gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-                maxCrossAxisExtent: 220,
-                childAspectRatio: 0.63,
-              ),
-              delegate: SliverChildBuilderDelegate((context, index) {
-                final product = widget.displayProducts[index];
-                return ProductCard(
-                  product: product,
-                  onTap: () async {
-                    final deletedId = await context.push<String>(
-                      '/product/${product.id}',
-                      extra: product,
-                    );
-
-                    if (deletedId != null && context.mounted) {
-                      context.read<ProductCubit>().removeProduct(deletedId);
-                    }
-                  },
-                );
-              }, childCount: widget.displayProducts.length),
-            ),
-          ),
-          if (widget.isLoadingMore)
-            const SliverToBoxAdapter(
-              child: Padding(
-                padding: EdgeInsets.symmetric(vertical: 16.0),
-                child: Center(child: CircularProgressIndicator()),
-              ),
-            ),
-        ],
       ),
     );
   }
