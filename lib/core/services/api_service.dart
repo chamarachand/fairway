@@ -37,4 +37,36 @@ class ApiService {
       throw const UnknownException();
     }
   }
+
+  Future<dynamic> delete(
+    String path, {
+    Map<String, String>? queryParameters,
+  }) async {
+    final uri = Uri.https(ApiConstants.baseUrl, path, queryParameters);
+    if (kDebugMode) debugPrint('url: ${uri.toString()}');
+
+    try {
+      final response = await http
+          .delete(uri)
+          .timeout(const Duration(seconds: 10));
+      final statusCode = response.statusCode;
+
+      if (statusCode >= 200 && statusCode < 300) {
+        return response.body.isNotEmpty ? jsonDecode(response.body) : null;
+      } else {
+        debugPrint('Server error: ${response.statusCode}');
+        throw const ServerException();
+      }
+    } on SocketException {
+      throw const NetworkException();
+    } on TimeoutException {
+      throw const NetworkException(
+        'Connection timed out. Please check your internet speed',
+      );
+    } on AppException {
+      rethrow;
+    } catch (e) {
+      throw const UnknownException();
+    }
+  }
 }

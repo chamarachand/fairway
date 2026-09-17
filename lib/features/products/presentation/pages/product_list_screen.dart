@@ -219,8 +219,15 @@ class _ProductsGridViewState extends State<_ProductsGridView> {
                 final product = widget.displayProducts[index];
                 return ProductCard(
                   product: product,
-                  onTap: () {
-                    context.push('/product/${product.id}', extra: product);
+                  onTap: () async {
+                    final deletedId = await context.push<String>(
+                      '/product/${product.id}',
+                      extra: product,
+                    );
+
+                    if (deletedId != null && context.mounted) {
+                      context.read<ProductCubit>().removeProduct(deletedId);
+                    }
                   },
                 );
               }, childCount: widget.displayProducts.length),

@@ -13,6 +13,7 @@ abstract class ProductRemoteDataSource {
   });
   Future<List<String>> fetchCategories();
   Future<Product> getProductById(String id);
+  Future<void> deleteProduct(String id);
 }
 
 class ProductRemoteDataSourceImpl implements ProductRemoteDataSource {
@@ -65,5 +66,10 @@ class ProductRemoteDataSourceImpl implements ProductRemoteDataSource {
   Future<Product> getProductById(String id) async {
     final data = await apiService.get(ApiConstants.productById(id));
     return Product.fromJson(data);
+  }
+
+  @override
+  Future<void> deleteProduct(String id) async {
+    await apiService.delete(ApiConstants.productById(id));
   }
 }

@@ -12,6 +12,7 @@ abstract class ProductRepository {
   });
   Future<List<String>> fetchCategories();
   Future<Product> getProductById(String id);
+  Future<void> deleteProduct(String id);
 }
 
 class ProductRepositoryImpl implements ProductRepository {
@@ -44,5 +45,10 @@ class ProductRepositoryImpl implements ProductRepository {
   @override
   Future<Product> getProductById(String id) async {
     return await remoteDataSource.getProductById(id);
+  }
+
+  @override
+  Future<void> deleteProduct(String id) async {
+    await remoteDataSource.deleteProduct(id);
   }
 }

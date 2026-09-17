@@ -110,4 +110,15 @@ class ProductCubit extends Cubit<ProductState> {
       emit(currentState.copyWith(isLoadingMore: false));
     }
   }
+
+  void removeProduct(String productId) {
+    if (state is! ProductsLoaded) return;
+    final currentState = state as ProductsLoaded;
+
+    final newProducts = currentState.products
+        .where((product) => product.id.toString() != productId)
+        .toList();
+
+    emit(currentState.copyWith(products: newProducts));
+  }
 }

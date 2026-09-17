@@ -1,3 +1,4 @@
+import 'package:fairway/core/errors/exceptions.dart';
 import 'package:fairway/features/products/data/models/product.dart';
 import 'package:fairway/features/products/data/repository/product_repository.dart';
 import 'package:fairway/features/products/presentation/cubit/product_details_state.dart';
@@ -50,6 +51,24 @@ class ProductDetailsCubit extends Cubit<ProductDetailState> {
     } catch (e) {
       debugPrint('loadDetails: $e');
       emit(ProductDetailsLoaded(product: currentProduct!));
+    }
+  }
+
+  Future<bool> deleteProduct() async {
+    final currentState = state;
+    if (currentState is! ProductDetailsLoaded) return false;
+
+    emit(currentState.copyWith(isDeleting: true));
+
+    try {
+      await repository.deleteProduct(currentState.product.id.toString());
+      return true;
+    } on AppException {
+      emit(currentState.copyWith(isDeleting: false));
+      return false;
+    } catch (e) {
+      emit(currentState.copyWith(isDeleting: false));
+      return false;
     }
   }
 }

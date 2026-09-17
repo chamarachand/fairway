@@ -1,7 +1,9 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:fairway/core/utils/snack_bar_helper.dart';
 import 'package:fairway/features/products/data/models/product.dart';
 import 'package:fairway/features/products/presentation/cubit/product_details_cubit.dart';
 import 'package:fairway/features/products/presentation/cubit/product_details_state.dart';
+import 'package:fairway/features/products/presentation/widgets/delete_confirmation_dialog.dart';
 import 'package:fairway/features/products/presentation/widgets/product_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -25,6 +27,30 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
     );
   }
 
+  Future<void> _handleProductDelete() async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (_) => const DeleteConfirmationDialog(),
+    );
+
+    if (confirmed != true) return;
+    if (!mounted) return;
+
+    final success = await context.read<ProductDetailsCubit>().deleteProduct();
+
+    if (!mounted) return;
+
+    if (success) {
+      SnackBarHelper.showSnackBar(context, 'Product deleted');
+      Navigator.of(context).pop(widget.productId);
+    } else {
+      SnackBarHelper.showSnackBar(
+        context,
+        'Failed to delete listing. Please try again',
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -33,6 +59,24 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
           'Product Details',
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
+        actions: [
+          BlocBuilder<ProductDetailsCubit, ProductDetailState>(
+            builder: (context, state) {
+              final isDeleting =
+                  state is ProductDetailsLoaded && state.isDeleting;
+              return IconButton(
+                icon: isDeleting
+                    ? const SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      )
+                    : const Icon(Icons.delete),
+                onPressed: isDeleting ? null : _handleProductDelete,
+              );
+            },
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(24),
