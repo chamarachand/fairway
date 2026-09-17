@@ -35,7 +35,7 @@ class ProductDetailsCubit extends Cubit<ProductDetailState> {
 
     // get similar items
     try {
-      final similarProducts = await repository.fetchProducts(
+      final similarProducts = await repository.fetchSimilarProducts(
         category: currentProduct!.category,
       );
 

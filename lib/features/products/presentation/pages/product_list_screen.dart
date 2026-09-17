@@ -4,6 +4,7 @@ import 'package:fairway/features/products/presentation/cubit/category_state.dart
 import 'package:fairway/features/products/presentation/cubit/product_cubit.dart';
 import 'package:fairway/features/products/presentation/cubit/product_state.dart';
 import 'package:fairway/features/products/presentation/widgets/category_list.dart';
+import 'package:fairway/features/products/presentation/widgets/offline_banner.dart';
 import 'package:fairway/features/products/presentation/widgets/product_card.dart';
 import 'package:fairway/features/products/presentation/widgets/search_box.dart';
 import 'package:fairway/features/products/presentation/widgets/sort_popup_menu.dart';
@@ -35,6 +36,14 @@ class _ProductListScreenState extends State<ProductListScreen> {
       ),
       body: Column(
         children: [
+          BlocBuilder<ProductCubit, ProductState>(
+            builder: (context, state) {
+              if (state is ProductsLoaded && state.isOffline) {
+                return const OfflineBanner();
+              }
+              return const SizedBox.shrink();
+            },
+          ),
           Center(
             child: ConstrainedBox(
               constraints: const BoxConstraints(maxWidth: 500),

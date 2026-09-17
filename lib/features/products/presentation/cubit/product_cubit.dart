@@ -55,7 +55,7 @@ class ProductCubit extends Cubit<ProductState> {
     emit(ProductsLoading());
 
     try {
-      final products = await repository.fetchProducts(
+      final (:products, :isOffline) = await repository.fetchProducts(
         category: targetCategory,
         query: targetQuery,
         sortOrder: targerSortOption,
@@ -69,6 +69,7 @@ class ProductCubit extends Cubit<ProductState> {
           searchQuery: targetQuery,
           priceSort: targerSortOption,
           isLast: products.length < _limit,
+          isOffline: isOffline,
         ),
       );
     } on AppException catch (e) {
@@ -87,13 +88,14 @@ class ProductCubit extends Cubit<ProductState> {
     emit(currentState.copyWith(isLoadingMore: true));
 
     try {
-      final newProducts = await repository.fetchProducts(
-        category: category,
-        query: currentState.searchQuery,
-        sortOrder: currentState.priceSort,
-        limit: _limit,
-        skip: currentState.products.length,
-      );
+      final (products: newProducts, :isOffline) = await repository
+          .fetchProducts(
+            category: category,
+            query: currentState.searchQuery,
+            sortOrder: currentState.priceSort,
+            limit: _limit,
+            skip: currentState.products.length,
+          );
 
       if (newProducts.isEmpty) {
         emit(currentState.copyWith(isLast: true, isLoadingMore: false));

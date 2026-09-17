@@ -15,6 +15,7 @@ class ProductsLoaded extends ProductState {
   final PriceSort priceSort;
   final bool isLast;
   final bool isLoadingMore;
+  final bool isOffline;
 
   ProductsLoaded({
     required this.products,
@@ -22,6 +23,7 @@ class ProductsLoaded extends ProductState {
     this.priceSort = PriceSort.none,
     this.isLast = false,
     this.isLoadingMore = false,
+    this.isOffline = false,
   });
 
   ProductsLoaded copyWith({
@@ -30,6 +32,7 @@ class ProductsLoaded extends ProductState {
     PriceSort? priceSort,
     bool? isLast,
     bool? isLoadingMore,
+    bool? isOffline,
   }) {
     return ProductsLoaded(
       products: products ?? this.products,
@@ -37,6 +40,7 @@ class ProductsLoaded extends ProductState {
       priceSort: priceSort ?? this.priceSort,
       isLast: isLast ?? this.isLast,
       isLoadingMore: isLoadingMore ?? this.isLoadingMore,
+      isOffline: isOffline ?? this.isOffline,
     );
   }
 }

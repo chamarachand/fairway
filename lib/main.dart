@@ -6,8 +6,10 @@ import 'package:fairway/features/products/presentation/cubit/product_details_cub
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-void main() {
-  setUpDependencies();
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  await setUpDependencies();
   runApp(const MyApp());
 }
 
