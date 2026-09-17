@@ -1,3 +1,4 @@
+import 'package:fairway/core/constants/app_constants.dart';
 import 'package:fairway/core/enums/price_sort.dart';
 import 'package:fairway/core/errors/exceptions.dart';
 import 'package:fairway/features/products/data/models/product.dart';
@@ -9,7 +10,7 @@ import 'package:fairway/features/products/presentation/cubit/product_state.dart'
 
 class ProductCubit extends Cubit<ProductState> {
   final ProductRepository repository;
-  static const int _limit = 20;
+  static const int _limit = AppConstants.paginationLimit;
 
   ProductCubit({required this.repository}) : super(ProductInitial());
 

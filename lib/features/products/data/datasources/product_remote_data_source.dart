@@ -1,4 +1,5 @@
 import 'package:fairway/core/constants/api_constants.dart';
+import 'package:fairway/core/constants/app_constants.dart';
 import 'package:fairway/core/enums/price_sort.dart';
 import 'package:fairway/core/services/api_service.dart';
 import 'package:fairway/features/products/data/models/product.dart';
@@ -8,7 +9,7 @@ abstract class ProductRemoteDataSource {
     String? category,
     String? query,
     PriceSort? sortOrder,
-    int limit = 10,
+    int limit = AppConstants.paginationLimit,
     int skip = 0,
   });
   Future<List<String>> fetchCategories();
@@ -26,7 +27,7 @@ class ProductRemoteDataSourceImpl implements ProductRemoteDataSource {
     String? category,
     String? query,
     PriceSort? sortOrder,
-    int limit = 10,
+    int limit = AppConstants.paginationLimit,
     int skip = 0,
   }) async {
     late String path;

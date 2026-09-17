@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:fairway/core/constants/app_constants.dart';
 import 'package:fairway/core/utils/snack_bar_helper.dart';
 import 'package:fairway/features/products/data/models/product.dart';
 import 'package:fairway/features/products/presentation/cubit/product_details_cubit.dart';
@@ -237,7 +238,7 @@ class _ProductInfo extends StatelessWidget {
           Text(product.title, style: Theme.of(context).textTheme.headlineSmall),
           const SizedBox(height: 12),
           Text(
-            'LKR${product.price.toStringAsFixed(2)}',
+            '${AppConstants.currency}${product.price.toStringAsFixed(2)}',
             style: Theme.of(context).textTheme.titleLarge?.copyWith(
               fontWeight: FontWeight.bold,
               color: Theme.of(context).colorScheme.primary,

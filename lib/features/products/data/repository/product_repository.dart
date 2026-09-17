@@ -1,3 +1,4 @@
+import 'package:fairway/core/constants/app_constants.dart';
 import 'package:fairway/core/enums/price_sort.dart';
 import 'package:fairway/core/errors/exceptions.dart';
 import 'package:fairway/features/products/data/datasources/product_local_data_source.dart';
@@ -9,7 +10,7 @@ abstract class ProductRepository {
     String? category,
     String? query,
     PriceSort? sortOrder,
-    int limit = 10,
+    int limit = AppConstants.paginationLimit,
     int skip = 0,
   });
   Future<List<String>> fetchCategories();
@@ -32,7 +33,7 @@ class ProductRepositoryImpl implements ProductRepository {
     String? category,
     String? query,
     PriceSort? sortOrder,
-    int limit = 10,
+    int limit = AppConstants.paginationLimit,
     int skip = 0,
   }) async {
     try {

@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:fairway/core/constants/app_constants.dart';
 import 'package:flutter/material.dart';
 
 import 'package:fairway/features/products/data/models/product.dart';
@@ -84,7 +85,7 @@ class ProductCard extends StatelessWidget {
                     ),
                     // Price
                     Text(
-                      'LKR${product.price.toStringAsFixed(2)}',
+                      '${AppConstants.currency}${product.price.toStringAsFixed(2)}',
                       style: Theme.of(context).textTheme.titleMedium?.copyWith(
                         fontWeight: FontWeight.bold,
                       ),
