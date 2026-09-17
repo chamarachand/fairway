@@ -7,6 +7,7 @@ import 'package:fairway/features/products/presentation/widgets/delete_confirmati
 import 'package:fairway/features/products/presentation/widgets/product_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 class ProductDetailsPage extends StatefulWidget {
   final String productId;
@@ -292,7 +293,15 @@ class _SimilarProdutsListView extends StatelessWidget {
                       final product = similarProducts[index];
                       return SizedBox(
                         width: 180,
-                        child: ProductCard(product: product, onTap: () {}),
+                        child: ProductCard(
+                          product: product,
+                          onTap: () async {
+                            await context.push<String>(
+                              '/product/${product.id}',
+                              extra: product,
+                            );
+                          },
+                        ),
                       );
                     },
                   ),
