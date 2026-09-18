@@ -2,6 +2,7 @@ import 'package:fairway/core/utils/snack_bar_helper.dart';
 import 'package:fairway/core/widgets/theme_toggle_button.dart';
 import 'package:fairway/features/create_product/presentation/cubit/create_product_cubit.dart';
 import 'package:fairway/features/create_product/presentation/cubit/create_product_state.dart';
+import 'package:fairway/features/create_product/presentation/widgets/custom_text_field.dart';
 import 'package:fairway/features/products/presentation/cubit/category_cubit.dart';
 import 'package:fairway/features/products/presentation/cubit/category_state.dart';
 import 'package:fairway/features/products/presentation/cubit/product_cubit.dart';
@@ -92,18 +93,21 @@ class _CreateProductScreenState extends State<CreateProductScreen> {
                   key: _formKey,
                   child: ListView(
                     children: [
-                      TextFormField(
+                      // Title
+                      CustomTextField(
                         controller: _titleController,
+                        labelText: 'Title *',
                         enabled: !isSubmitting,
-                        decoration: const InputDecoration(
-                          labelText: 'Title *',
-                          border: OutlineInputBorder(),
-                        ),
-                        validator: (val) => val == null || val.trim().isEmpty
-                            ? 'Enter a title'
-                            : null,
+                        validator: (val) {
+                          if (val == null || val.trim().isEmpty) {
+                            return 'Enter a title';
+                          }
+                          return null;
+                        },
                       ),
-                      const SizedBox(height: 16),
+                      const SizedBox(height: 20),
+
+                      // Category
                       BlocBuilder<CategoryCubit, CategoryState>(
                         builder: (context, state) {
                           List<String> categories = [];
@@ -113,9 +117,12 @@ class _CreateProductScreenState extends State<CreateProductScreen> {
 
                           return DropdownButtonFormField<String>(
                             initialValue: _selectedCategory,
-                            decoration: const InputDecoration(
+                            menuMaxHeight: 300,
+                            decoration: InputDecoration(
                               labelText: 'Category *',
-                              border: OutlineInputBorder(),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
                             ),
                             items: categories.map((cat) {
                               return DropdownMenuItem(
@@ -125,24 +132,30 @@ class _CreateProductScreenState extends State<CreateProductScreen> {
                             }).toList(),
                             onChanged: isSubmitting
                                 ? null
-                                : (val) =>
-                                      setState(() => _selectedCategory = val),
-                            validator: (val) =>
-                                val == null ? 'Please select a category' : null,
+                                : (val) {
+                                    setState(() {
+                                      _selectedCategory = val;
+                                    });
+                                  },
+                            validator: (val) {
+                              if (val == null) {
+                                return 'Please select a category';
+                              }
+                              return null;
+                            },
                           );
                         },
                       ),
-                      const SizedBox(height: 16),
-                      TextFormField(
+                      const SizedBox(height: 20),
+
+                      // Price
+                      CustomTextField(
                         controller: _priceController,
+                        labelText: 'Price (\$)*',
                         enabled: !isSubmitting,
+                        prefixText: '\$ ',
                         keyboardType: const TextInputType.numberWithOptions(
                           decimal: true,
-                        ),
-                        decoration: const InputDecoration(
-                          labelText: 'Price (\$)*',
-                          border: OutlineInputBorder(),
-                          prefixText: '\$ ',
                         ),
                         validator: (val) {
                           if (val == null || val.trim().isEmpty) {
@@ -154,12 +167,16 @@ class _CreateProductScreenState extends State<CreateProductScreen> {
                           return null;
                         },
                       ),
-                      const SizedBox(height: 16),
+                      const SizedBox(height: 20),
+
+                      // Condition
                       DropdownButtonFormField<String>(
                         initialValue: _selectedCondition,
-                        decoration: const InputDecoration(
+                        decoration: InputDecoration(
                           labelText: 'Condition *',
-                          border: OutlineInputBorder(),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10.0),
+                          ),
                         ),
                         items: _conditions.map((cond) {
                           return DropdownMenuItem(
@@ -169,24 +186,30 @@ class _CreateProductScreenState extends State<CreateProductScreen> {
                         }).toList(),
                         onChanged: isSubmitting
                             ? null
-                            : (val) =>
-                                  setState(() => _selectedCondition = val!),
+                            : (val) {
+                                setState(() {
+                                  _selectedCondition = val!;
+                                });
+                              },
                       ),
-                      const SizedBox(height: 16),
-                      TextFormField(
+                      const SizedBox(height: 20),
+
+                      // Description
+                      CustomTextField(
                         controller: _descriptionController,
+                        labelText: 'Description *',
                         enabled: !isSubmitting,
                         maxLines: 5,
-                        decoration: const InputDecoration(
-                          labelText: 'Description *',
-                          border: OutlineInputBorder(),
-                          alignLabelWithHint: true,
-                        ),
-                        validator: (val) => val == null || val.trim().isEmpty
-                            ? 'Enter a description'
-                            : null,
+                        validator: (val) {
+                          if (val == null || val.trim().isEmpty) {
+                            return 'Enter a description';
+                          }
+                          return null;
+                        },
                       ),
-                      const SizedBox(height: 24),
+                      const SizedBox(height: 20),
+
+                      // Button
                       FilledButton.icon(
                         onPressed: isSubmitting ? null : _submitForm,
                         icon: isSubmitting
