@@ -5,6 +5,7 @@ import 'package:fairway/features/products/presentation/cubit/product_cubit.dart'
 import 'package:fairway/features/products/presentation/cubit/product_details_cubit.dart';
 import 'package:fairway/features/products/presentation/cubit/product_details_state.dart';
 import 'package:fairway/features/products/presentation/widgets/delete_confirmation_dialog.dart';
+import 'package:fairway/features/products/presentation/widgets/product_error_view.dart';
 import 'package:fairway/features/products/presentation/widgets/product_image_gallery.dart';
 import 'package:fairway/features/products/presentation/widgets/product_info_section.dart';
 import 'package:fairway/features/products/presentation/widgets/similar_products_list_view.dart';
@@ -69,6 +70,12 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
             builder: (context, state) {
               final isDeleting =
                   state is ProductDetailsLoaded && state.isDeleting;
+              final productNotLoaded =
+                  state is ProductDetailError || state is ProductDetailsLoading;
+
+              if (productNotLoaded) {
+                return const SizedBox.shrink();
+              }
               return IconButton(
                 icon: isDeleting
                     ? const SizedBox(
@@ -91,7 +98,17 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
           }
 
           if (state is ProductDetailError) {
-            return Center(child: Text(state.message));
+            return Center(
+              child: ProductErrorView(
+                msg: state.message,
+                onRetry: () {
+                  context.read<ProductDetailsCubit>().loadDetails(
+                    id: widget.productId,
+                    product: widget.product,
+                  );
+                },
+              ),
+            );
           }
 
           if (state is ProductDetailsLoaded) {
