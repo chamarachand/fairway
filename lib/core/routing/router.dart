@@ -1,7 +1,11 @@
+import 'package:fairway/core/di/injection.dart';
+import 'package:fairway/features/create_product/presentation/cubit/create_product_cubit.dart';
 import 'package:fairway/features/create_product/presentation/pages/create_product_screen.dart';
 import 'package:fairway/features/products/data/models/product.dart';
+import 'package:fairway/features/products/presentation/cubit/product_details_cubit.dart';
 import 'package:fairway/features/products/presentation/pages/product_details_page.dart';
 import 'package:fairway/features/products/presentation/pages/product_list_screen.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 final router = GoRouter(
@@ -27,13 +31,21 @@ final router = GoRouter(
             final id = state.pathParameters['id'] ?? '';
             final product = state.extra as Product?;
 
-            return ProductDetailsPage(productId: id, product: product);
+            return BlocProvider(
+              create: (_) => getIt<ProductDetailsCubit>(),
+              child: ProductDetailsPage(productId: id, product: product),
+            );
           },
         ),
 
         GoRoute(
           path: 'create-product',
-          builder: (context, state) => const CreateProductScreen(),
+          builder: (context, state) {
+            return BlocProvider(
+              create: (_) => getIt<CreateProductCubit>(),
+              child: const CreateProductScreen(),
+            );
+          },
         ),
       ],
     ),
