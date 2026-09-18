@@ -7,8 +7,16 @@ import 'package:fairway/features/products/data/models/product.dart';
 class ProductCard extends StatelessWidget {
   final Product product;
   final VoidCallback onTap;
+  final bool isFavourite;
+  final VoidCallback onFavouriteToggle;
 
-  const ProductCard({super.key, required this.product, required this.onTap});
+  const ProductCard({
+    super.key,
+    required this.product,
+    required this.onTap,
+    required this.isFavourite,
+    required this.onFavouriteToggle,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -29,28 +37,48 @@ class ProductCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            AspectRatio(
-              aspectRatio: 1,
-              child: product.thumbnail.isEmpty
-                  ? Container(
-                      color: Colors.grey.shade200,
-                      child: const Icon(Icons.image_not_supported, size: 40),
-                    )
-                  : CachedNetworkImage(
-                      imageUrl: product.thumbnail,
-                      fit: BoxFit.cover,
-                      placeholder: (context, url) => const Center(
-                        child: SizedBox(
-                          width: 20,
-                          height: 20,
-                          child: CircularProgressIndicator(strokeWidth: 2),
+            Stack(
+              children: [
+                AspectRatio(
+                  aspectRatio: 1,
+                  child: product.thumbnail.isEmpty
+                      ? Container(
+                          color: Colors.grey.shade200,
+                          child: const Icon(
+                            Icons.image_not_supported,
+                            size: 40,
+                          ),
+                        )
+                      : CachedNetworkImage(
+                          imageUrl: product.thumbnail,
+                          fit: BoxFit.cover,
+                          placeholder: (context, url) => const Center(
+                            child: SizedBox(
+                              width: 20,
+                              height: 20,
+                              child: CircularProgressIndicator(strokeWidth: 2),
+                            ),
+                          ),
+                          errorWidget: (context, url, error) => Container(
+                            color: Colors.grey.shade200,
+                            child: const Icon(
+                              Icons.image_not_supported,
+                              size: 40,
+                            ),
+                          ),
                         ),
-                      ),
-                      errorWidget: (context, url, error) => Container(
-                        color: Colors.grey.shade200,
-                        child: const Icon(Icons.image_not_supported, size: 40),
-                      ),
+                ),
+                Positioned(
+                  right: 6,
+                  child: IconButton(
+                    onPressed: onFavouriteToggle,
+                    icon: Icon(
+                      isFavourite ? Icons.favorite : Icons.favorite_border,
+                      color: isFavourite ? Colors.red : null,
                     ),
+                  ),
+                ),
+              ],
             ),
             Expanded(
               child: Padding(

@@ -17,6 +17,8 @@ abstract class ProductRepository {
   Future<Product> getProductById(String id);
   Future<void> deleteProduct(String id);
   Future<List<Product>> fetchSimilarProducts({required String category});
+  Set<int> getFavouriteIds();
+  Future<void> saveFavouriteIds(Set<int> favouriteIds);
 }
 
 class ProductRepositoryImpl implements ProductRepository {
@@ -91,5 +93,15 @@ class ProductRepositoryImpl implements ProductRepository {
   @override
   Future<void> deleteProduct(String id) async {
     await remoteDataSource.deleteProduct(id);
+  }
+
+  @override
+  Set<int> getFavouriteIds() {
+    return localDataSource.getFavouriteIds();
+  }
+
+  @override
+  Future<void> saveFavouriteIds(Set<int> favouriteIds) async {
+    await localDataSource.saveFavouriteIds(favouriteIds);
   }
 }

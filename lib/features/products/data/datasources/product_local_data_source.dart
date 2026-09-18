@@ -4,6 +4,8 @@ import 'package:fairway/features/products/data/models/product.dart';
 abstract class ProductLocalDataSource {
   Future<void> cacheProducts(List<Product> products);
   List<Product>? getCachedProducts();
+  Set<int> getFavouriteIds();
+  Future<void> saveFavouriteIds(Set<int> favouriteIds);
 }
 
 class ProductLocalDataSourceImpl implements ProductLocalDataSource {
@@ -19,5 +21,15 @@ class ProductLocalDataSourceImpl implements ProductLocalDataSource {
   @override
   List<Product>? getCachedProducts() {
     return localStorageService.getProducts();
+  }
+
+  @override
+  Set<int> getFavouriteIds() {
+    return localStorageService.getFavouriteIds();
+  }
+
+  @override
+  Future<void> saveFavouriteIds(Set<int> favouriteIds) async {
+    await localStorageService.saveFavouriteIds(favouriteIds);
   }
 }

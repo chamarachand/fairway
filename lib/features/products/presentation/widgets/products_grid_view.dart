@@ -7,11 +7,13 @@ import 'package:go_router/go_router.dart';
 
 class ProductsGridView extends StatefulWidget {
   final List<Product> displayProducts;
+  final Set<int> favouriteIds;
   final bool isLoadingMore;
 
   const ProductsGridView({
     super.key,
     required this.displayProducts,
+    required this.favouriteIds,
     required this.isLoadingMore,
   });
 
@@ -62,6 +64,8 @@ class _ProductsGridViewState extends State<ProductsGridView> {
               ),
               delegate: SliverChildBuilderDelegate((context, index) {
                 final product = widget.displayProducts[index];
+                final isFavourite = widget.favouriteIds.contains(product.id);
+
                 return ProductCard(
                   product: product,
                   onTap: () async {
@@ -73,6 +77,10 @@ class _ProductsGridViewState extends State<ProductsGridView> {
                     if (deletedId != null && context.mounted) {
                       context.read<ProductCubit>().removeProduct(deletedId);
                     }
+                  },
+                  isFavourite: isFavourite,
+                  onFavouriteToggle: () {
+                    context.read<ProductCubit>().toggleFavourite(product.id);
                   },
                 );
               }, childCount: widget.displayProducts.length),

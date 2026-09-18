@@ -80,11 +80,14 @@ class ProductCubit extends Cubit<ProductState> {
         skip: 0,
       );
 
+      final savedFavourites = repository.getFavouriteIds();
+
       emit(
         ProductsLoaded(
           products: products,
           searchQuery: targetQuery,
           category: isOffline ? null : targetCategory,
+          favouriteIds: savedFavourites,
           priceSort: targerSortOption,
           isLast: products.length < _limit,
           isOffline: isOffline,
@@ -161,6 +164,23 @@ class ProductCubit extends Cubit<ProductState> {
       );
       updatedList.insert(targetIndex, product);
       emit(currentState.copyWith(products: updatedList));
+    }
+  }
+
+  Future<void> toggleFavourite(int productId) async {
+    if (state is ProductsLoaded) {
+      final currentState = state as ProductsLoaded;
+      final favouriteIds = Set<int>.from(currentState.favouriteIds);
+
+      if (favouriteIds.contains(productId)) {
+        favouriteIds.remove(productId);
+      } else {
+        favouriteIds.add(productId);
+      }
+
+      emit(currentState.copyWith(favouriteIds: favouriteIds));
+
+      await repository.saveFavouriteIds(favouriteIds);
     }
   }
 

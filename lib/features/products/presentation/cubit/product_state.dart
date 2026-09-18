@@ -18,6 +18,7 @@ class ProductsLoaded extends ProductState {
   final List<Product> products;
   final String searchQuery;
   final PriceSort priceSort;
+  final Set<int> favouriteIds;
   final bool isLast;
   final bool isLoadingMore;
   final bool isOffline;
@@ -27,6 +28,7 @@ class ProductsLoaded extends ProductState {
     this.searchQuery = '',
     this.priceSort = PriceSort.none,
     super.category,
+    this.favouriteIds = const {},
     this.isLast = false,
     this.isLoadingMore = false,
     this.isOffline = false,
@@ -37,6 +39,7 @@ class ProductsLoaded extends ProductState {
     String? searchQuery,
     PriceSort? priceSort,
     String? category,
+    Set<int>? favouriteIds,
     bool clearCategory = false,
     bool? isLast,
     bool? isLoadingMore,
@@ -47,6 +50,7 @@ class ProductsLoaded extends ProductState {
       searchQuery: searchQuery ?? this.searchQuery,
       priceSort: priceSort ?? this.priceSort,
       category: clearCategory ? null : (category ?? this.category),
+      favouriteIds: favouriteIds ?? this.favouriteIds,
       isLast: isLast ?? this.isLast,
       isLoadingMore: isLoadingMore ?? this.isLoadingMore,
       isOffline: isOffline ?? this.isOffline,

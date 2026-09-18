@@ -9,6 +9,7 @@ class LocalStorageService {
 
   static const String _cachedProductsKey = 'cached_products';
   static const String _themeModeKey = 'is_dark_mode';
+  static const String _favouritesKey = 'favourite_product_ids';
 
   bool getIsDarkMode() {
     return _prefs.getBool(_themeModeKey) ?? false;
@@ -28,5 +29,17 @@ class LocalStorageService {
   Future<void> saveCacheProducts(List<Product> products) async {
     final jsonList = products.map((product) => product.toJson()).toList();
     await _prefs.setString(_cachedProductsKey, jsonEncode(jsonList));
+  }
+
+  Set<int> getFavouriteIds() {
+    final favList = _prefs.getStringList(_favouritesKey);
+    if (favList == null || favList.isEmpty) return {};
+
+    return favList.map((id) => int.tryParse(id)).whereType<int>().toSet();
+  }
+
+  Future<void> saveFavouriteIds(Set<int> favouriteIds) async {
+    final stringList = favouriteIds.map((id) => id.toString()).toList();
+    await _prefs.setStringList(_favouritesKey, stringList);
   }
 }

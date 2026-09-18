@@ -74,6 +74,7 @@ class _ProductListScreenState extends State<ProductListScreen> {
 
                   return ProductsGridView(
                     displayProducts: state.products,
+                    favouriteIds: state.favouriteIds,
                     isLoadingMore: state.isLoadingMore,
                   );
                 }
