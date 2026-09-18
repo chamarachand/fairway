@@ -10,7 +10,7 @@ class ProductInfoSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(right: 10),
+      padding: const EdgeInsets.symmetric(horizontal: 5),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -32,29 +32,27 @@ class ProductInfoSection extends StatelessWidget {
             product.description,
             style: Theme.of(context).textTheme.bodyLarge,
           ),
-          Padding(
-            padding: const EdgeInsets.all(12),
-            child: Column(
-              children: [
-                if (product.stock > 0)
-                  _DetailTile(
-                    label: 'Stock',
-                    value: '${product.stock} items available',
-                  ),
-                if (product.weight > 0)
-                  _DetailTile(label: 'Weight', value: '${product.weight} kg'),
-                if (product.warrantyInformation.isNotEmpty)
-                  _DetailTile(
-                    label: 'Warranty',
-                    value: product.warrantyInformation,
-                  ),
-                if (product.shippingInformation.isNotEmpty)
-                  _DetailTile(
-                    label: 'Shipping',
-                    value: product.shippingInformation,
-                  ),
-              ],
-            ),
+          const SizedBox(height: 24),
+          Column(
+            children: [
+              if (product.stock > 0)
+                _DetailTile(
+                  label: 'Stock',
+                  value: '${product.stock} items available',
+                ),
+              if (product.weight > 0)
+                _DetailTile(label: 'Weight', value: '${product.weight} kg'),
+              if (product.warrantyInformation.isNotEmpty)
+                _DetailTile(
+                  label: 'Warranty',
+                  value: product.warrantyInformation,
+                ),
+              if (product.shippingInformation.isNotEmpty)
+                _DetailTile(
+                  label: 'Shipping',
+                  value: product.shippingInformation,
+                ),
+            ],
           ),
         ],
       ),
@@ -71,17 +69,31 @@ class _DetailTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 2),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 2),
+      child: Column(
+        crossAxisAlignment: .start,
         children: [
-          SizedBox(
-            width: 160, // Fixed width ensures all values align perfectly
-            child: Text(label, style: TextStyle(fontWeight: FontWeight.w600)),
+          Row(
+            crossAxisAlignment: .start,
+            children: [
+              Expanded(
+                flex: 2,
+                child: Text(
+                  label,
+                  style: const TextStyle(fontWeight: FontWeight.w600),
+                ),
+              ),
+              Expanded(
+                flex: 3,
+                child: Text(
+                  value,
+                  textAlign: TextAlign.end,
+                  style: Theme.of(context).textTheme.bodyMedium,
+                ),
+              ),
+            ],
           ),
-          Expanded(
-            child: Text(value, style: Theme.of(context).textTheme.bodyMedium),
-          ),
+          const Divider(height: 16),
         ],
       ),
     );
