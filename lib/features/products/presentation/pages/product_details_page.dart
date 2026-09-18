@@ -83,74 +83,66 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
           const ThemeToggleButton(),
         ],
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(24),
-        child: Center(
-          child: Column(
-            children: [
-              BlocBuilder<ProductDetailsCubit, ProductDetailState>(
-                builder: (context, state) {
-                  if (state is ProductDetailsLoading) {
-                    return const Center(child: CircularProgressIndicator());
-                  }
+      body: BlocBuilder<ProductDetailsCubit, ProductDetailState>(
+        builder: (context, state) {
+          if (state is ProductDetailsLoading) {
+            return const Center(child: CircularProgressIndicator());
+          }
 
-                  if (state is ProductDetailsLoaded) {
-                    final product = state.product;
+          if (state is ProductDetailError) {
+            return Center(child: Text(state.message));
+          }
 
-                    return LayoutBuilder(
-                      builder: (context, constraints) {
-                        final isWideScreen = constraints.maxWidth > 600;
+          if (state is ProductDetailsLoaded) {
+            final product = state.product;
 
-                        return Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+            return LayoutBuilder(
+              builder: (context, constraints) {
+                final isWideScreen = constraints.maxWidth > 600;
+
+                return SingleChildScrollView(
+                  padding: const EdgeInsets.all(24),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      if (isWideScreen)
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            if (isWideScreen)
-                              Row(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Expanded(
-                                    flex: 4,
-                                    child: ProductImageGallery(
-                                      key: const ValueKey(
-                                        'product_images_widget',
-                                      ),
-                                      product: product,
-                                      isWideScreen: isWideScreen,
-                                    ),
-                                  ),
-                                  const SizedBox(width: 30),
-                                  Expanded(
-                                    flex: 5,
-                                    child: ProductInfoSection(product: product),
-                                  ),
-                                ],
-                              )
-                            else ...[
-                              ProductImageGallery(
+                            Expanded(
+                              flex: 4,
+                              child: ProductImageGallery(
                                 key: const ValueKey('product_images_widget'),
                                 product: product,
-                                isWideScreen: false,
+                                isWideScreen: isWideScreen,
                               ),
-                              const SizedBox(height: 24),
-                              ProductInfoSection(product: product),
-                            ],
+                            ),
+                            const SizedBox(width: 30),
+                            Expanded(
+                              flex: 5,
+                              child: ProductInfoSection(product: product),
+                            ),
                           ],
-                        );
-                      },
-                    );
-                  }
+                        )
+                      else ...[
+                        ProductImageGallery(
+                          key: const ValueKey('product_images_widget'),
+                          product: product,
+                          isWideScreen: false,
+                        ),
+                        const SizedBox(height: 24),
+                        ProductInfoSection(product: product),
+                      ],
+                      const SimilarProductsListView(),
+                    ],
+                  ),
+                );
+              },
+            );
+          }
 
-                  if (state is ProductDetailError) {
-                    return const Center(child: Text("Some error occurred"));
-                  }
-
-                  return const SizedBox.shrink();
-                },
-              ),
-              const SimilarProductsListView(),
-            ],
-          ),
-        ),
+          return const SizedBox.shrink();
+        },
       ),
     );
   }
