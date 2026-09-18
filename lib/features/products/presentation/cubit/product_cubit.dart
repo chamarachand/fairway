@@ -84,7 +84,7 @@ class ProductCubit extends Cubit<ProductState> {
         ProductsLoaded(
           products: products,
           searchQuery: targetQuery,
-          category: isOffline ? null : category,
+          category: isOffline ? null : targetCategory,
           priceSort: targerSortOption,
           isLast: products.length < _limit,
           isOffline: isOffline,
