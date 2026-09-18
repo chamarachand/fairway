@@ -3,7 +3,7 @@
 ## Main Features
 
 - Responsive product listing grid
-- product search with debounce
+- Product search with debounce
 - Category filtering
 - Price sorting
 - Pagination / infinite scrolling
@@ -92,7 +92,7 @@ lib/
 
 The application uses **Bloc Cubit** for managing application state.
 
-Cubits were chosen because they provide a convenient way to manage states throughout the application. It allows to manage UI state while seperating business logic from the UI. Cubits also abstracts the additional event-handling complexity of pure BLoC, which is unnecessary for the scope of this application.
+Cubits were chosen because they provide a convenient way to manage application state while keeping business logic separate from the UI. Cubits also abstracts the additional event-handling complexity of pure BLoC, which is unnecessary for the scope of this application.
 
 The application uses Cubits for product listing, product details create-listing flows and theme handling.
 
@@ -145,13 +145,13 @@ Product details are accessible through deep linking routes such as:
 - iOS Simulator
 - Android device
 
-## Screenshots
-
-- [Phone Screenshots (iOS simulator)](https://drive.google.com/drive/folders/1BGZwqEaJvoCrLR29QsyJhbrqbHzAxtna?usp=sharing)
-
 ## Demo Video
 
 - [Phone Demo Video (iOS simulator)](https://drive.google.com/drive/folders/1NmSyRt4V-RiwguANG9VxTEPEsM6V5bJR?usp=sharing)
+
+## Screenshots
+
+- [Phone Screenshots (iOS simulator)](https://drive.google.com/drive/folders/1BGZwqEaJvoCrLR29QsyJhbrqbHzAxtna?usp=sharing)
 
 ## APK
 
