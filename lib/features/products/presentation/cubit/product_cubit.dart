@@ -152,8 +152,34 @@ class ProductCubit extends Cubit<ProductState> {
 
     if (state is ProductsLoaded) {
       final currentState = state as ProductsLoaded;
-      final updatedList = [product, ...currentState.products];
+      final updatedList = List<Product>.from(currentState.products);
+
+      final targetIndex = _getSortedIndex(
+        updatedList,
+        product,
+        currentState.priceSort,
+      );
+      updatedList.insert(targetIndex, product);
       emit(currentState.copyWith(products: updatedList));
+    }
+  }
+
+  int _getSortedIndex(
+    List<Product> products,
+    Product newProduct,
+    PriceSort sortOption,
+  ) {
+    switch (sortOption) {
+      case PriceSort.lowToHigh:
+        final index = products.indexWhere((p) => p.price > newProduct.price);
+        return index == -1 ? products.length : index;
+
+      case PriceSort.highToLow:
+        final index = products.indexWhere((p) => p.price < newProduct.price);
+        return index == -1 ? products.length : index;
+
+      case PriceSort.none:
+        return 0;
     }
   }
 }
