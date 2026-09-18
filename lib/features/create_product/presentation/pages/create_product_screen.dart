@@ -70,7 +70,7 @@ class _CreateProductScreenState extends State<CreateProductScreen> {
             );
             SnackBarHelper.showSnackBar(
               context,
-              'Listing created successfully!',
+              'Product created successfully!',
             );
 
             context.pushReplacement(
