@@ -1,6 +1,7 @@
 import 'package:fairway/core/utils/snack_bar_helper.dart';
 import 'package:fairway/core/widgets/theme_toggle_button.dart';
 import 'package:fairway/features/products/data/models/product.dart';
+import 'package:fairway/features/products/presentation/cubit/product_cubit.dart';
 import 'package:fairway/features/products/presentation/cubit/product_details_cubit.dart';
 import 'package:fairway/features/products/presentation/cubit/product_details_state.dart';
 import 'package:fairway/features/products/presentation/widgets/delete_confirmation_dialog.dart';
@@ -37,8 +38,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
       builder: (_) => const DeleteConfirmationDialog(),
     );
 
-    if (confirmed != true) return;
-    if (!mounted) return;
+    if (confirmed != true || !mounted) return;
 
     final success = await context.read<ProductDetailsCubit>().deleteProduct();
 
@@ -46,11 +46,12 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
 
     if (success) {
       SnackBarHelper.showSnackBar(context, 'Product deleted');
+      context.read<ProductCubit>().removeProduct(widget.productId);
       Navigator.of(context).pop(widget.productId);
     } else {
       SnackBarHelper.showSnackBar(
         context,
-        'Failed to delete listing. Please try again',
+        'Failed to delete product. Please try again',
       );
     }
   }

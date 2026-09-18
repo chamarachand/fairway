@@ -68,15 +68,11 @@ class _ProductsGridViewState extends State<ProductsGridView> {
 
                 return ProductCard(
                   product: product,
-                  onTap: () async {
-                    final deletedId = await context.push<String>(
+                  onTap: () {
+                    context.push<String>(
                       '/product/${product.id}',
                       extra: product,
                     );
-
-                    if (deletedId != null && context.mounted) {
-                      context.read<ProductCubit>().removeProduct(deletedId);
-                    }
                   },
                   isFavourite: isFavourite,
                   onFavouriteToggle: () {
