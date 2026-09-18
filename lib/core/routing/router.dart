@@ -6,6 +6,16 @@ import 'package:go_router/go_router.dart';
 
 final router = GoRouter(
   initialLocation: '/',
+  redirect: (context, state) {
+    final uri = state.uri;
+
+    if (uri.scheme == 'fairway') {
+      final path = uri.host.isNotEmpty ? '/${uri.host}${uri.path}' : uri.path;
+      return path;
+    }
+
+    return null;
+  },
   routes: [
     GoRoute(
       path: '/',
